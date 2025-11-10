@@ -1,0 +1,816 @@
+---
+interface Props {
+  title?: string;
+  html?: string;
+  css?: string;
+  js?: string;
+  jsOnly?: boolean;
+  height?: string;
+  controls?: Array<{
+    label: string;
+    action: string;
+    cssChange: string;
+  }>;
+}
+
+const {
+  title = "Playground Interactivo",
+  html = '<div class="demo">Hola Mundo</div>',
+  css = '.demo { color: blue; }',
+  js = '',
+  jsOnly = false,
+  height = "400px",
+  controls = []
+} = Astro.props;
+
+// Generate a unique ID for this playground instance
+const playgroundId = `playground-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="playground-container" data-playground-id={playgroundId} data-js-only={jsOnly ? 'true' : 'false'}>
+  <div class="playground-header">
+    <h3 class="playground-title">{title}</h3>
+    <button class="playground-reset" data-action="reset">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+      </svg>
+      Resetear
+    </button>
+  </div>
+  
+  {controls.length > 0 && (
+    <div class="playground-controls">
+      {controls.map((control, index) => (
+        <button 
+          class="control-button" 
+          data-action={control.action}
+          data-css-change={control.cssChange}
+        >
+          {control.label}
+        </button>
+      ))}
+    </div>
+  )}
+  
+  <div class="playground-body">
+    {jsOnly ? (
+      <>
+        <div class="playground-editors">
+          <div class="editor-section">
+            <div class="editor-header">
+              <span class="editor-label">JavaScript</span>
+            </div>
+            <div class="editor-area">
+              <pre class="editor-highlight" aria-hidden="true"></pre>
+              <textarea
+                class="editor-textarea js-editor"
+                data-type="js"
+                data-highlight="js"
+                spellcheck="false"
+              >{js.trim()}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="playground-preview js-only-preview" style={`height: ${height}`}>
+          <div class="preview-header">
+            <span class="preview-label">Consola</span>
+            <button class="run-js-button" data-action="run-js">
+              Ejecutar código
+            </button>
+          </div>
+          <div class="console-output" data-console-output>
+            Escribe código en el editor y haz clic en "Ejecutar código".
+          </div>
+        </div>
+      </>
+    ) : (
+      <>
+        <div class="playground-editors">
+          <div class="editor-section">
+            <div class="editor-header">
+              <span class="editor-label">HTML</span>
+            </div>
+            <div class="editor-area">
+              <pre class="editor-highlight" aria-hidden="true"></pre>
+              <textarea
+                class="editor-textarea html-editor"
+                data-type="html"
+                spellcheck="false"
+              >{html.trim()}</textarea>
+            </div>
+          </div>
+          
+          <div class="editor-section">
+            <div class="editor-header">
+              <span class="editor-label">CSS</span>
+            </div>
+            <div class="editor-area">
+              <pre class="editor-highlight" aria-hidden="true"></pre>
+              <textarea
+                class="editor-textarea css-editor"
+                data-type="css"
+                spellcheck="false"
+              >{css.trim()}</textarea>
+            </div>
+          </div>
+          
+          {js && (
+            <div class="editor-section">
+              <div class="editor-header">
+                <span class="editor-label">JavaScript</span>
+              </div>
+              <div class="editor-area">
+                <pre class="editor-highlight" aria-hidden="true"></pre>
+                <textarea
+                  class="editor-textarea js-editor"
+                  data-type="js"
+                  data-highlight="js"
+                  spellcheck="false"
+                >{js.trim()}</textarea>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div class="playground-preview" style={`height: ${height}`}>
+          <div class="preview-header">
+            <span class="preview-label">Vista Previa</span>
+          </div>
+          <iframe
+            class="preview-frame"
+            sandbox="allow-scripts allow-modals"
+            title="Preview"
+          ></iframe>
+        </div>
+      </>
+    )}
+  </div>
+</div>
+
+<style>
+  .playground-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 2rem 0;
+    background: white;
+  }
+  
+  :global(.dark) .playground-container {
+    border-color: #374151;
+    background: #1f2937;
+  }
+  
+  .playground-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  :global(.dark) .playground-header {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .playground-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  :global(.dark) .playground-title {
+    color: #f9fafb;
+  }
+  
+  .playground-reset {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .playground-reset:hover {
+    background: #2563eb;
+  }
+  
+  .playground-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  :global(.dark) .playground-controls {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .control-button {
+    padding: 0.5rem 1rem;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .control-button:hover {
+    background: #059669;
+  }
+  
+  .playground-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #e5e7eb;
+  }
+
+  [data-js-only="true"] .playground-body {
+    grid-template-columns: 1fr;
+  }
+  
+  :global(.dark) .playground-body {
+    background: #374151;
+  }
+  
+  @media (max-width: 768px) {
+    .playground-body {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .playground-editors {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: #e5e7eb;
+  }
+  
+  :global(.dark) .playground-editors {
+    background: #374151;
+  }
+  
+  .editor-section {
+    background: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  :global(.dark) .editor-section {
+    background: #1f2937;
+  }
+  
+  .editor-header {
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  :global(.dark) .editor-header {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .editor-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  :global(.dark) .editor-label {
+    color: #9ca3af;
+  }
+  
+  .editor-area {
+    position: relative;
+    background: #020817;
+    overflow: hidden;
+  }
+
+  :global(.dark) .editor-area {
+    background: #111827;
+  }
+
+  .editor-textarea,
+  .editor-highlight {
+    tab-size: 2;
+  }
+
+  .editor-textarea {
+    flex: 1;
+    min-height: 150px;
+    padding: 1rem;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    resize: vertical;
+    color: #e5e7eb;
+    background: transparent;
+    caret-color: #22c55e;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+  }
+
+  .editor-textarea::selection {
+    background: rgba(56, 189, 248, 0.2);
+  }
+
+  [data-js-only="true"] .editor-textarea {
+    min-height: 400px;
+  }
+  
+  :global(.dark) .editor-textarea {
+    color: #f9fafb;
+  }
+
+  .editor-area[data-has-highlight="true"] .editor-textarea {
+    color: transparent;
+  }
+
+  .editor-area[data-has-highlight="true"] .editor-textarea::selection {
+    background: rgba(59, 130, 246, 0.35);
+  }
+
+  .editor-highlight {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
+    pointer-events: none;
+    color: #f3f4f6;
+    background: transparent;
+    z-index: 0;
+  }
+
+  .editor-area:not([data-has-highlight="true"]) .editor-highlight {
+    display: none;
+  }
+
+  .token.keyword {
+    color: #93c5fd;
+  }
+
+  .token.string {
+    color: #f9a8d4;
+  }
+
+  .token.number {
+    color: #fcd34d;
+  }
+
+  .token.literal {
+    color: #34d399;
+  }
+
+  .token.comment {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  .token.placeholder {
+    opacity: 0;
+  }
+  
+  .editor-textarea:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px #3b82f6;
+  }
+  
+  .playground-preview {
+    background: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  :global(.dark) .playground-preview {
+    background: #1f2937;
+  }
+  
+  .preview-header {
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  :global(.dark) .preview-header {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .preview-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  :global(.dark) .preview-label {
+    color: #9ca3af;
+  }
+  
+  .preview-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: white;
+  }
+
+  .js-only-preview {
+    display: flex;
+    flex-direction: column;
+    background: #0b1020;
+    color: #e5e7eb;
+  }
+
+  .run-js-button {
+    padding: 0.25rem 0.75rem;
+    margin-left: auto;
+    background: #22c55e;
+    color: #0f172a;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .run-js-button:hover {
+    background: #16a34a;
+  }
+
+  .console-output {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    background: #020617;
+    color: #e5e7eb;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border-top: 1px solid #111827;
+  }
+</style>
+
+<script>
+  // Client-side JavaScript for playground functionality
+  const JS_KEYWORDS = new Set([
+    'const', 'let', 'var', 'if', 'else', 'for', 'while', 'do', 'switch',
+    'case', 'break', 'continue', 'return', 'function', 'class', 'try',
+    'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof', 'in', 'of',
+    'await', 'async'
+  ]);
+
+  const JS_LITERALS = new Set(['true', 'false', 'null', 'undefined', 'NaN', 'Infinity']);
+  const highlightControllers = new WeakMap<HTMLTextAreaElement, () => void>();
+
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function highlightJavaScript(code: string): string {
+    let i = 0;
+    let result = '';
+
+    function push(type: string | null, value: string) {
+      if (!value) return;
+      const escaped = escapeHtml(value);
+      if (type) {
+        result += `<span class="token ${type}">${escaped}</span>`;
+      } else {
+        result += escaped;
+      }
+    }
+
+    while (i < code.length) {
+      const char = code[i];
+
+      if (char === '/' && code[i + 1] === '/') {
+        const start = i;
+        i += 2;
+        while (i < code.length && code[i] !== '\n') {
+          i++;
+        }
+        push('comment', code.slice(start, i));
+        continue;
+      }
+
+      if (char === '/' && code[i + 1] === '*') {
+        const start = i;
+        i += 2;
+        while (i < code.length && !(code[i] === '*' && code[i + 1] === '/')) {
+          i++;
+        }
+        if (i < code.length) {
+          i += 2;
+        }
+        push('comment', code.slice(start, i));
+        continue;
+      }
+
+      if (char === '"' || char === "'" || char === '`') {
+        const quote = char;
+        const start = i;
+        i++;
+        while (i < code.length) {
+          if (code[i] === '\\') {
+            i += 2;
+            continue;
+          }
+          if (code[i] === quote) {
+            i++;
+            break;
+          }
+          i++;
+        }
+        push('string', code.slice(start, i));
+        continue;
+      }
+
+      if (/[0-9]/.test(char)) {
+        const start = i;
+        i++;
+        while (i < code.length && /[0-9._xXbBeE]/.test(code[i])) {
+          i++;
+        }
+        push('number', code.slice(start, i));
+        continue;
+      }
+
+      if (/[A-Za-z_$]/.test(char)) {
+        const start = i;
+        i++;
+        while (i < code.length && /[A-Za-z0-9_$]/.test(code[i])) {
+          i++;
+        }
+        const word = code.slice(start, i);
+        if (JS_KEYWORDS.has(word)) {
+          push('keyword', word);
+        } else if (JS_LITERALS.has(word)) {
+          push('literal', word);
+        } else {
+          push(null, word);
+        }
+        continue;
+      }
+
+      push(null, char);
+      i++;
+    }
+
+    return result || '&nbsp;';
+  }
+
+  function getHighlightedCode(code: string, language?: string): string {
+    if (language === 'js') {
+      return highlightJavaScript(code);
+    }
+    return escapeHtml(code);
+  }
+
+  function attachHighlighter(textarea: HTMLTextAreaElement) {
+    const language = textarea.dataset.highlight;
+    if (!language) return;
+    const wrapper = textarea.closest('.editor-area') as HTMLDivElement | null;
+    const highlightLayer = wrapper?.querySelector('.editor-highlight') as HTMLPreElement | null;
+    if (!wrapper || !highlightLayer) return;
+
+    wrapper.setAttribute('data-has-highlight', 'true');
+
+    const updateHighlight = () => {
+      const code = textarea.value || '';
+      const highlighted = getHighlightedCode(code, language);
+      highlightLayer.innerHTML = `${highlighted}<span class="token placeholder">&nbsp;</span>`;
+      highlightLayer.scrollTop = textarea.scrollTop;
+      highlightLayer.scrollLeft = textarea.scrollLeft;
+    };
+
+    const syncScroll = () => {
+      highlightLayer.scrollTop = textarea.scrollTop;
+      highlightLayer.scrollLeft = textarea.scrollLeft;
+    };
+
+    textarea.addEventListener('input', updateHighlight);
+    textarea.addEventListener('scroll', syncScroll);
+
+    highlightControllers.set(textarea, updateHighlight);
+    updateHighlight();
+  }
+
+  function refreshHighlight(textarea?: HTMLTextAreaElement | null) {
+    if (!textarea) return;
+    const updater = highlightControllers.get(textarea);
+    if (updater) {
+      updater();
+    }
+  }
+
+  function initPlayground(container: HTMLElement) {
+    const isJsOnly = container.dataset.jsOnly === 'true';
+
+    const htmlEditor = container.querySelector('.html-editor') as HTMLTextAreaElement | null;
+    const cssEditor = container.querySelector('.css-editor') as HTMLTextAreaElement | null;
+    const jsEditor = container.querySelector('.js-editor') as HTMLTextAreaElement | null;
+    const previewFrame = container.querySelector('.preview-frame') as HTMLIFrameElement | null;
+    const resetButton = container.querySelector('[data-action="reset"]') as HTMLButtonElement | null;
+    const controlButtons = container.querySelectorAll('.control-button') as NodeListOf<HTMLButtonElement>;
+    const runJsButton = container.querySelector('[data-action="run-js"]') as HTMLButtonElement | null;
+    const consoleOutput = container.querySelector('[data-console-output]') as HTMLDivElement | null;
+
+    const textareas = container.querySelectorAll('.editor-textarea') as NodeListOf<HTMLTextAreaElement>;
+    textareas.forEach(textarea => attachHighlighter(textarea));
+
+    // JS-Only mode: no HTML/CSS editors, no iframe live preview, only run JS on demand
+    if (isJsOnly && jsEditor && runJsButton && consoleOutput) {
+      const originalJS = jsEditor.value;
+
+      function runUserCode() {
+        if (!consoleOutput) return;
+        consoleOutput.textContent = '';
+        const logs: string[] = [];
+
+        const originalLog = console.log;
+        (console as any).log = (...args: any[]) => {
+          logs.push(args.map(a => {
+            if (typeof a === 'object') {
+              try {
+                return JSON.stringify(a);
+              } catch {
+                return String(a);
+              }
+            }
+            return String(a);
+          }).join(' '));
+          originalLog.apply(console, args);
+        };
+
+        try {
+          if (!jsEditor) {
+            throw new Error('Editor de JS no encontrado.');
+          }
+          // eslint-disable-next-line no-new-func
+          const fn = new Function(jsEditor.value);
+          fn();
+        } catch (error: any) {
+          logs.push('❌ Error: ' + (error && error.message ? error.message : String(error)));
+        } finally {
+          console.log = originalLog;
+        }
+
+        if (!consoleOutput) return;
+        if (logs.length === 0) {
+          consoleOutput.textContent = 'No hubo salida con console.log().';
+        } else {
+          consoleOutput.textContent = logs.join('\n');
+        }
+      }
+
+      runJsButton.addEventListener('click', runUserCode);
+
+      if (resetButton) {
+        resetButton.addEventListener('click', () => {
+          if (jsEditor) {
+            jsEditor.value = originalJS;
+            refreshHighlight(jsEditor);
+          }
+          if (consoleOutput) {
+            consoleOutput.textContent = 'Editor reseteado. Haz clic en "Ejecutar código" para ver la salida.';
+          }
+        });
+      }
+
+      return;
+    }
+
+    // HTML/CSS/JS playground (modo clásico)
+    if (!htmlEditor || !cssEditor || !previewFrame) {
+      refreshHighlight(jsEditor);
+      return;
+    }
+
+    const originalHTML = htmlEditor.value;
+    const originalCSS = cssEditor.value;
+    const originalJS = jsEditor ? jsEditor.value : '';
+
+    function updatePreview() {
+      if (!htmlEditor || !cssEditor || !previewFrame) return;
+
+      const htmlContent = htmlEditor.value;
+      const cssContent = cssEditor.value;
+      const jsContent = jsEditor ? jsEditor.value : '';
+
+      const previewDocument = `
+        <!DOCTYPE html>
+        <html lang="es">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { padding: 1rem; font-family: system-ui, -apple-system, sans-serif; }
+              ${cssContent}
+            </style>
+          </head>
+          <body>
+            ${htmlContent}
+            <script>
+              ${jsContent}
+            <\/script>
+          </body>
+        </html>
+      `;
+
+      const blob = new Blob([previewDocument], { type: 'text/html; charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      previewFrame.src = url;
+
+      previewFrame.onload = () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+
+    let timeoutId: number;
+    function handleInput() {
+      clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(updatePreview, 300);
+    }
+
+    htmlEditor.addEventListener('input', handleInput);
+    cssEditor.addEventListener('input', handleInput);
+    if (jsEditor) {
+      jsEditor.addEventListener('input', handleInput);
+    }
+
+    controlButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const cssChange = button.dataset.cssChange;
+        if (cssChange) {
+          cssEditor.value = cssChange;
+          updatePreview();
+        }
+      });
+    });
+
+    if (resetButton) {
+      resetButton.addEventListener('click', () => {
+        htmlEditor.value = originalHTML;
+        cssEditor.value = originalCSS;
+        if (jsEditor) {
+          jsEditor.value = originalJS;
+          refreshHighlight(jsEditor);
+        }
+        updatePreview();
+      });
+    }
+
+    updatePreview();
+  }
+
+  function initAllPlaygrounds() {
+    const playgrounds = document.querySelectorAll('.playground-container');
+    playgrounds.forEach(playground => {
+      initPlayground(playground as HTMLElement);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initAllPlaygrounds);
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initAllPlaygrounds();
+  }
+</script>

@@ -1,0 +1,472 @@
+---
+title: "Flexbox CSS"
+slug: "flexbox"
+description: "Domina Flexbox de CSS para crear layouts flexibles y responsive con facilidad. Guía completa con ejemplos prácticos e interactivos"
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+import FlexPlayground from '../../components/FlexPlayground.astro';
+
+# Flexbox CSS
+
+**Flexbox** (Flexible Box Layout) es un modelo de diseño en CSS que hace más fácil crear layouts flexibles y adaptables. Con Flexbox, puedes organizar elementos en filas o columnas, distribuir espacio de manera justa y alinearlos sin complicaciones.
+
+## ¿Qué es Flexbox?
+
+Flexbox es como un sistema de "cajas flexibles" que organiza los elementos hijos de un contenedor en una sola dirección: ya sea horizontal (fila) o vertical (columna). Es ideal para:
+
+- Repartir espacio entre elementos de forma automática
+- Alinear elementos en diferentes posiciones
+- Hacer diseños que se adapten a diferentes tamaños de pantalla
+- Controlar el espaciado y la alineación de manera sencilla
+
+Imagina que tienes una caja con varios elementos y solo quieres mover botones: cambiar la dirección, centrar, repartir espacios. Flexbox es perfecto para eso.
+
+<FlexPlayground 
+  title="Juega con Flexbox"
+  description="Cambia las propiedades con los botones y mira cómo se reacomodan los elementos."
+/>
+
+## Conceptos básicos de Flexbox
+
+### Container (Contenedor Flex) e Items (Elementos Flex)
+
+El **contenedor flex** es el elemento padre que tiene `display: flex`. Sus hijos directos se convierten automáticamente en **elementos flex** (o flex items).
+
+<CodePlayground 
+  title="Ejemplo básico de Flexbox"
+  html={`<div class="contenedor">
+  <div class="elemento">Elemento 1</div>
+  <div class="elemento">Elemento 2</div>
+  <div class="elemento">Elemento 3</div>
+</div>`}
+  css={`.contenedor {
+  display: flex;
+  background: lightblue;
+  padding: 10px;
+  gap: 10px;
+}
+
+.elemento {
+  background: lightcoral;
+  padding: 20px;
+  border-radius: 5px;
+}`}
+/>
+
+**Prueba esto:** Cambia `display: flex` por `display: block` y observa cómo los elementos pasan de estar en fila a estar uno debajo del otro.
+
+---
+
+## Propiedades del Contenedor (Flex Container)
+
+### `flex-direction` - Dirección de los elementos
+
+Controla en qué dirección van los elementos: fila o columna.
+
+<FlexPlayground 
+  title="flex-direction: Cambia la dirección"
+  description="Selecciona la dirección y observa cómo cambia el eje principal."
+  controls={[
+    {
+      label: "flex-direction",
+      property: "flex-direction",
+      options: [
+        { label: "row", value: "row" },
+        { label: "row-reverse", value: "row-reverse" },
+        { label: "column", value: "column" },
+        { label: "column-reverse", value: "column-reverse" },
+      ],
+      defaultValue: "row",
+    }
+  ]}
+/>
+
+**Valores disponibles:**
+- `row` (por defecto): Izquierda a derecha
+- `row-reverse`: Derecha a izquierda
+- `column`: Arriba a abajo
+- `column-reverse`: Abajo a arriba
+
+Tip: piensa en `row` como “fila” y `column` como “columna”. Usa las variantes `*-reverse` cuando quieras invertir el orden visual.
+
+---
+
+### `flex-wrap` - Si los elementos pasan a otra línea
+
+Por defecto, todos los elementos quedan en una sola línea. Con `flex-wrap`, pueden pasar a líneas nuevas si no caben.
+
+<FlexPlayground
+  title="flex-wrap: Romper en varias líneas"
+  description="Reduce el espacio y activa wrap para ver cómo los items bajan de línea."
+  items={8}
+  height="200px"
+  controls={[
+    {
+      label: "flex-wrap",
+      property: "flex-wrap",
+      options: [
+        { label: "nowrap", value: "nowrap" },
+        { label: "wrap", value: "wrap" },
+        { label: "wrap-reverse", value: "wrap-reverse" },
+      ],
+      defaultValue: "wrap",
+    },
+    {
+      label: "gap",
+      property: "gap",
+      options: [
+        { label: "4px", value: "4px" },
+        { label: "8px", value: "8px" },
+        { label: "16px", value: "16px" },
+      ],
+      defaultValue: "8px",
+    },
+  ]}
+/>
+
+**Valores:**
+- `nowrap`: Todo en una línea (se encogen si es necesario)
+- `wrap`: Pasan a la siguiente línea si no caben
+- `wrap-reverse`: Líneas en orden inverso
+
+---
+
+### `justify-content` - Distribución en el eje principal
+
+Controla cómo se distribuyen los elementos a lo largo del eje principal.
+
+<FlexPlayground
+  title="justify-content: Distribución horizontal"
+  description="Prueba cómo cambia el espacio entre elementos en el eje principal."
+  items={3}
+  controls={[
+    {
+      label: "justify-content",
+      property: "justify-content",
+      options: [
+        { label: "flex-start", value: "flex-start" },
+        { label: "center", value: "center" },
+        { label: "flex-end", value: "flex-end" },
+        { label: "space-between", value: "space-between" },
+        { label: "space-around", value: "space-around" },
+        { label: "space-evenly", value: "space-evenly" },
+      ],
+      defaultValue: "space-between",
+    },
+  ]}
+/>
+
+**Valores disponibles:**
+- `flex-start`: Al inicio
+- `flex-end`: Al final
+- `center`: Al centro
+- `space-between`: Espacio entre elementos
+- `space-around`: Espacio alrededor de elementos
+- `space-evenly`: Espacio igual entre todos
+
+**Prueba:** Cambia `space-between` por `center` o `flex-end` para ver las diferencias.
+
+---
+
+### `align-items` - Alineación en el eje cruzado
+
+Controla cómo se alinean los elementos en el eje cruzado (por defecto, vertical).
+
+<FlexPlayground
+  title="align-items: Alineación vertical"
+  description="Cambia la altura del contenedor en tu mente: mira dónde se posicionan las tarjetas."
+  items={3}
+  height="160px"
+  controls={[
+    {
+      label: "align-items",
+      property: "align-items",
+      options: [
+        { label: "stretch", value: "stretch" },
+        { label: "flex-start", value: "flex-start" },
+        { label: "center", value: "center" },
+        { label: "flex-end", value: "flex-end" },
+        { label: "baseline", value: "baseline" },
+      ],
+      defaultValue: "center",
+    },
+    {
+      label: "justify-content",
+      property: "justify-content",
+      options: [
+        { label: "flex-start", value: "flex-start" },
+        { label: "center", value: "center" },
+        { label: "space-between", value: "space-between" },
+      ],
+      defaultValue: "space-between",
+    },
+  ]}
+/>
+
+**Valores:**
+- `stretch` (por defecto): Estiran para llenar
+- `flex-start`: Al inicio del eje cruzado
+- `flex-end`: Al final
+- `center`: Al centro
+- `baseline`: Alineados por línea base del texto
+
+---
+
+## Propiedades de los Elementos Flex (Flex Items)
+
+### `flex-grow` - Cuánto crecen los elementos
+
+Indica cuánto puede crecer un elemento para ocupar espacio extra disponible.
+
+<FlexPlayground
+  title="flex-grow: Repartir el espacio extra"
+  description="Simula una fila donde algunos elementos ocupan más espacio que otros."
+  items={3}
+  controls={[
+    {
+      label: "flex-grow (visual)",
+      property: "gap",
+      options: [
+        { label: "Equilibrado", value: "16px" },
+        { label: "Más espacio", value: "24px" },
+      ],
+      defaultValue: "16px",
+    },
+  ]}
+/>
+
+Ejemplo recomendado en código (más explícito):
+
+<CodePlayground 
+  title="flex-grow en acción"
+  html={`<div class="fila">
+  <div class="item item-a">flex-grow: 1</div>
+  <div class="item item-b">flex-grow: 0</div>
+  <div class="item item-c">flex-grow: 2</div>
+</div>`}
+  css={`.fila {
+  display: flex;
+  gap: 10px;
+}
+
+.item {
+  padding: 10px;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.item-a { background: #6366f1; flex-grow: 1; }
+.item-b { background: #6b7280; flex-grow: 0; }
+.item-c { background: #22c55e; flex-grow: 2; }`}
+/>
+
+**Explicación:** El tercer elemento ocupa el doble de espacio extra que el primero. El segundo no crece.
+
+---
+
+### `flex` - Atajo para grow, shrink y basis
+
+Une `flex-grow`, `flex-shrink` y `flex-basis` en una sola propiedad.
+
+<CodePlayground 
+  title="flex: Atajo completo"
+  html={`<div class="fila">
+  <div class="item flex-1">flex: 1</div>
+  <div class="item flex-none">flex: none</div>
+  <div class="item flex-2">flex: 2</div>
+</div>`}
+  css={`.fila {
+  display: flex;
+  gap: 10px;
+}
+
+.item {
+  padding: 10px;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.flex-1 { background: #0ea5e9; flex: 1; }
+.flex-none { background: #6b7280; flex: none; }
+.flex-2 { background: #22c55e; flex: 2; }`}
+/>
+
+**Valores comunes:**
+- `flex: 1`: Crece y encoge, base 0%
+- `flex: none`: Tamaño fijo
+- `flex: auto`: Crece y encoge, base auto
+
+---
+
+## Recetas rápidas con Flexbox
+
+Usa estas configuraciones típicas como “presets mentales”.
+
+### Centrar elementos (horizontal y vertical)
+
+<CodePlayground 
+  title="Centering: El santo grial"
+  html={`<div class="centrado">
+  <div class="contenido">
+    <h2>Contenido Centrado</h2>
+    <p>Perfectamente centrado vertical y horizontalmente</p>
+  </div>
+</div>`}
+  css={`.centrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.contenido {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h2 {
+  margin: 0 0 10px 0;
+  color: #667eea;
+}
+
+p {
+  margin: 0;
+  color: #666;
+}`}
+/>
+
+---
+
+### Barra de navegación responsive
+
+<CodePlayground 
+  title="Navbar: Barra de navegación"
+  html={`<nav class="navbar">
+  <div class="logo">MiSitio</div>
+  <div class="links">
+    <a href="#">Inicio</a>
+    <a href="#">Servicios</a>
+    <a href="#">Contacto</a>
+  </div>
+  <button class="btn">Login</button>
+</nav>`}
+  css={`.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  padding: 15px 30px;
+  color: white;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+}
+
+.links a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: #4CAF50;
+}
+
+.btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: #45a049;
+}`}
+/>
+
+---
+
+### Cards responsivas
+
+<CodePlayground 
+  title="Cards: Tarjetas flexibles"
+  html={`<div class="cards">
+  <div class="card">
+    <h3>Tarjeta 1</h3>
+    <p>Contenido de la primera tarjeta</p>
+  </div>
+  <div class="card">
+    <h3>Tarjeta 2</h3>
+    <p>Contenido de la segunda tarjeta</p>
+  </div>
+  <div class="card">
+    <h3>Tarjeta 3</h3>
+    <p>Contenido de la tercera tarjeta</p>
+  </div>
+</div>`}
+  css={`.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.card {
+  flex: 1 1 200px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+p {
+  margin: 0;
+  color: #666;
+}`}
+/>
+
+---
+
+## Consejos y mejores prácticas
+
+1. **Usa Flexbox para diseños en una dirección** (fila o columna)
+2. **Prefiere `gap`** para espaciado en lugar de margins
+3. **`flex: 1`** hace que elementos crezcan igual
+4. **Combina con CSS Grid** para diseños complejos
+5. **Practica** con estos ejemplos interactivos
+
+## Compatibilidad
+
+Flexbox funciona en todos los navegadores modernos. Para navegadores muy antiguos, usa autoprefixer.
+
+---
+
+**¡Ahora practica!** Modifica los ejemplos de arriba para experimentar y dominar Flexbox.

@@ -1,0 +1,335 @@
+---
+// src/components/GridPlayground.astro
+import { Code } from 'astro/components';
+
+const {
+  justifyContentOptions = 'start,end,center,stretch,space-around,space-between,space-evenly',
+  alignItemsOptions = 'start,end,center,stretch',
+  alignContentOptions = 'start,end,center,stretch,space-around,space-between,space-evenly',
+  initialJustifyContent = 'start',
+  initialAlignItems = 'stretch',
+  initialAlignContent = 'start',
+  initialGap = '10',
+  minHeight = '300px',
+  showAlignContent = false,
+  showJustifyContent = true,
+  showAlignItems = true,
+  showGap = true,
+  showTemplateColumns = false,
+  initialTemplateColumns = '1fr 1fr 1fr',
+  showTemplateRows = false,
+  initialTemplateRows = 'auto',
+  showFlow = false,
+  initialFlow = 'row',
+  itemCount = 6,
+} = Astro.props;
+
+const justifyOptions = justifyContentOptions.split(',');
+const alignOptions = alignItemsOptions.split(',');
+const alignContent = alignContentOptions.split(',');
+const flowOptions: string[] = ['row', 'column', 'row dense', 'column dense'];
+
+const codeSnippet = `
+.container {
+  display: grid;
+  grid-template-columns: ${initialTemplateColumns};
+  grid-template-rows: ${initialTemplateRows};
+  grid-auto-flow: ${initialFlow};
+  justify-content: ${initialJustifyContent};
+  align-items: ${initialAlignItems};
+  align-content: ${initialAlignContent};
+  gap: ${initialGap}px;
+}
+`;
+---
+
+<div class="grid-playground" style=`--min-height: ${minHeight};`>
+  <div class="controls">
+    {showTemplateColumns && (
+      <div class="control-group" id="grid-template-columns-group">
+        <strong>grid-template-columns:</strong>
+        <div class="options">
+          <input type="text" value={initialTemplateColumns} id="grid-template-columns-input" />
+        </div>
+      </div>
+    )}
+    {showTemplateRows && (
+      <div class="control-group" id="grid-template-rows-group">
+        <strong>grid-template-rows:</strong>
+        <div class="options">
+          <input type="text" value={initialTemplateRows} id="grid-template-rows-input" />
+        </div>
+      </div>
+    )}
+    {showFlow && (
+       <div class="control-group" id="grid-auto-flow-group">
+        <strong>grid-auto-flow:</strong>
+        <div class="options">
+          {flowOptions.map((option: string) => (
+            <button class={option === initialFlow ? 'active' : ''} data-prop="grid-auto-flow" data-value={option}>{option}</button>
+          ))}
+        </div>
+      </div>
+    )}
+    {showJustifyContent && (
+      <div class="control-group" id="justify-content-group">
+        <strong>justify-content:</strong>
+        <div class="options">
+          {justifyOptions.map((option: string) => (
+            <button class={option === initialJustifyContent ? 'active' : ''} data-prop="justify-content" data-value={option}>{option}</button>
+          ))}
+        </div>
+      </div>
+    )}
+    {showAlignItems && (
+      <div class="control-group" id="align-items-group">
+        <strong>align-items:</strong>
+        <div class="options">
+          {alignOptions.map((option: string) => (
+            <button class={option === initialAlignItems ? 'active' : ''} data-prop="align-items" data-value={option}>{option}</button>
+          ))}
+        </div>
+      </div>
+    )}
+    {showAlignContent && (
+      <div class="control-group" id="align-content-group">
+        <strong>align-content:</strong>
+        <div class="options">
+          {alignContent.map((option: string) => (
+            <button class={option === initialAlignContent ? 'active' : ''} data-prop="align-content" data-value={option}>{option}</button>
+          ))}
+        </div>
+      </div>
+    )}
+    {showGap && (
+      <div class="control-group" id="gap-group">
+        <strong>gap:</strong>
+        <div class="options">
+          <input type="range" min="0" max="50" value={initialGap} id="gap-slider" />
+          <span id="gap-value">{initialGap}px</span>
+        </div>
+      </div>
+    )}
+  </div>
+  <div class="grid-container-wrapper">
+    <div 
+      class="grid-container"
+      id="grid-container"
+      style=`
+        justify-content: ${initialJustifyContent}; 
+        align-items: ${initialAlignItems};
+        align-content: ${initialAlignContent};
+        gap: ${initialGap}px;
+        grid-template-columns: ${initialTemplateColumns};
+        grid-template-rows: ${initialTemplateRows};
+        grid-auto-flow: ${initialFlow};
+      `
+    >
+      {Array.from({ length: itemCount }).map((_, i) => (
+        <div class="grid-item">
+          {i + 1}
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="code-display">
+    <Code code={codeSnippet.trim()} lang="css" theme="github-dark" id="grid-code-snippet" />
+  </div>
+</div>
+
+<style>
+  .grid-playground {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    background-color: #f9f9f9;
+  }
+
+  .controls {
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: #fff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .control-group strong {
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .options button {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+  }
+
+  .options button.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+  }
+  
+  .options button:hover:not(.active) {
+    background-color: #eee;
+  }
+
+  .options input[type="text"] {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }
+
+  .grid-container-wrapper {
+    padding: 1rem;
+    background-color: #f0f2f5;
+    min-height: var(--min-height);
+  }
+
+  .grid-container {
+    display: grid;
+    background: #e0e4e8;
+    border-radius: 5px;
+    height: 100%;
+    min-height: var(--min-height);
+  }
+
+  .grid-item {
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 5px;
+    min-height: 50px;
+  }
+
+  .grid-item:nth-child(even) {
+    background-color: #2980b9;
+  }
+
+  .code-display {
+    background-color: #2d2d2d;
+    padding: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    overflow: hidden;
+  }
+
+  .code-display :global(pre) {
+    margin: 0 !important;
+    border-radius: 0;
+    border: none !important;
+  }
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const playgrounds = document.querySelectorAll('.grid-playground');
+
+  playgrounds.forEach(playground => {
+    const container = playground.querySelector('.grid-container') as HTMLElement;
+    const codeSnippet = playground.querySelector('#grid-code-snippet :global(code)') as HTMLElement;
+    const codeSnippetContainer = playground.querySelector('#grid-code-snippet') as HTMLElement;
+
+    const state = {
+      'justify-content': container.style.justifyContent || 'start',
+      'align-items': container.style.alignItems || 'stretch',
+      'align-content': container.style.alignContent || 'start',
+      'gap': container.style.gap ? parseInt(container.style.gap) : 10,
+      'grid-template-columns': container.style.gridTemplateColumns || '1fr 1fr 1fr',
+      'grid-template-rows': container.style.gridTemplateRows || 'auto',
+      'grid-auto-flow': container.style.gridAutoFlow || 'row',
+    };
+
+    const updateCodeSnippet = () => {
+      const newCode = `
+.container {
+  display: grid;${state['grid-template-columns'] ? `\n  grid-template-columns: ${state['grid-template-columns']};` : ''}${state['grid-template-rows'] ? `\n  grid-template-rows: ${state['grid-template-rows']};` : ''}${state['grid-auto-flow'] ? `\n  grid-auto-flow: ${state['grid-auto-flow']};` : ''}${state['justify-content'] ? `\n  justify-content: ${state['justify-content']};` : ''}${state['align-items'] ? `\n  align-items: ${state['align-items']};` : ''}${state['align-content'] ? `\n  align-content: ${state['align-content']};` : ''}${state.gap !== undefined ? `\n  gap: ${state.gap}px;` : ''}
+}
+      `.trim();
+      
+      if (codeSnippet) {
+        codeSnippet.textContent = newCode;
+        if ((window as any).astro && (window as any).astro.highlight) {
+            codeSnippetContainer.innerHTML = (window as any).astro.highlight(newCode, 'css');
+        }
+      }
+    };
+
+    // Button controls
+    const buttons = playground.querySelectorAll('.options button');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const prop = button.getAttribute('data-prop');
+        const value = button.getAttribute('data-value');
+
+        if (prop && value) {
+          container.style[prop] = value;
+          state[prop] = value;
+
+          // Update active button
+          const group = playground.querySelector(`#${prop.replace(/\s/g, '-')}-group`);
+          if (group) {
+            group.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+          }
+          button.classList.add('active');
+          
+          updateCodeSnippet();
+        }
+      });
+    });
+
+    // Gap slider
+    const gapSlider = playground.querySelector('#gap-slider') as HTMLInputElement;
+    const gapValue = playground.querySelector('#gap-value') as HTMLElement;
+    if (gapSlider && gapValue) {
+      gapSlider.addEventListener('input', () => {
+        const value = gapSlider.value;
+        container.style.gap = `${value}px`;
+        gapValue.textContent = `${value}px`;
+        state.gap = parseInt(value);
+        updateCodeSnippet();
+      });
+    }
+
+    // Input controls
+    const inputs = playground.querySelectorAll('.options input[type="text"]');
+    inputs.forEach(input => {
+      const inputElement = input as HTMLInputElement;
+      inputElement.addEventListener('input', () => {
+        const prop = inputElement.id.replace('-input', '');
+        container.style[prop.replace(/-/g, (_match, offset) => offset > 0 ? 'C' : 'c') as any] = inputElement.value;
+        state[prop] = inputElement.value;
+        updateCodeSnippet();
+      });
+    });
+
+    updateCodeSnippet();
+  });
+});
+</script>

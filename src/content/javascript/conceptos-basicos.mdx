@@ -1,0 +1,1625 @@
+---
+title: "JavaScript: Conceptos Fundamentales"
+slug: "js-conceptos-basicos"
+description: "Guía completa y básica de JavaScript en español: variables, tipos de datos, condicionales, bucles, funciones, funciones flecha y ejercicios."
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# JavaScript: Conceptos Fundamentales
+
+Esta guía está diseñada para principiantes. Cada concepto se explica paso a paso con ejemplos simples y fáciles de entender.
+
+En el siguiente playground:
+- Solo verás el código JavaScript.
+- Tendrás un botón para ejecutar el código.
+- El resultado se mostrará en una consola integrada debajo.
+
+Si tu componente [`src/components/CodePlayground.astro`](src/components/CodePlayground.astro) aún muestra HTML/CSS, deberás adaptarlo para que soporte un modo solo-JS con botón de ejecución usando la prop `jsOnly`.
+
+---
+
+## 1. Variables: Contenedores de información
+
+Las variables son como **cajas o contenedores** donde guardamos información. Imagina que tienes una caja etiquetada con un nombre, y dentro pones un valor. Cada vez que necesitas ese valor, simplemente usas el nombre de la caja.
+
+### ¿Por qué usamos variables?
+
+- **Reutilizar datos**: En lugar de escribir el mismo valor muchas veces, lo guardamos en una variable y la usamos siempre.
+- **Cambiar valores**: Si el dato cambia, solo modificas la variable.
+- **Código legible**: Es más fácil entender `precioTotal` que un número suelto.
+
+### Declarar una variable
+
+Para crear una variable usamos la palabra `let`:
+
+```javascript
+let nombreDeLaVariable = valor;
+```
+
+En JavaScript hay tres formas de declarar variables:
+- **`let`**: La más recomendada. El valor puede cambiar.
+- **`const`**: El valor NO puede cambiar (constante). Muy usado en código moderno.
+- **`var`**: Antigua, evítala. Tiene reglas raras.
+
+### Tipos de datos principales
+
+JavaScript puede almacenar diferentes tipos de información:
+
+1. **Números** (`number`): Enteros o decimales
+   - Ejemplos: `25`, `3.14`, `-100`, `0`
+   
+2. **Texto** (`string`): Palabras o frases, se escriben entre comillas
+   - Ejemplos: `"Juan"`, `'Madrid'`, `"Hola Mundo"`
+   
+3. **Booleanos** (`boolean`): Solo dos valores: `true` (verdadero) o `false` (falso)
+   - Se usan en decisiones: "¿Es de día?" `true` o `false`
+   
+4. **Sin definir** (`undefined`): La variable existe pero no tiene valor
+   
+5. **Nulo** (`null`): Se asigna explícitamente para indicar "sin valor"
+
+### Ejemplos prácticos:
+
+<CodePlayground
+  title="Variables básicas"
+  jsOnly={true}
+  js={`// --- DECLARAR VARIABLES ---
+let nombre = "Juan";
+let edad = 25;
+let altura = 1.75;
+let esEstudiante = true;
+let ciudad = "Madrid";
+
+// Mostramos cada variable
+console.log("Nombre:", nombre);
+console.log("Edad:", edad);
+console.log("¿Es estudiante?:", esEstudiante);
+
+// --- CAMBIAR VALORES (mutabilidad) ---
+// Las variables con 'let' pueden cambiar de valor
+nombre = "María";
+edad = 26;
+esEstudiante = false;
+
+console.log("\\nDespués de cambios:");
+console.log("Nombre:", nombre);
+console.log("Edad:", edad);
+
+// --- CONOCER EL TIPO DE DATO ---
+// Usamos 'typeof' para saber qué tipo es
+console.log("\\nTipos de dato:");
+console.log("typeof nombre:", typeof nombre);        // "string"
+console.log("typeof edad:", typeof edad);            // "number"
+console.log("typeof esEstudiante:", typeof esEstudiante); // "boolean"
+
+// --- EJEMPLO PRÁCTICO: Calcular dinero ahorrado ---
+let dineroMes = 100;    // Guardé 100€ en enero
+let totalAhorrado = dineroMes; // Total = 100
+
+console.log("\\nEjemplo práctico:");
+console.log("En enero ahorré:", dineroMes + "€");
+console.log("Total ahorrado:", totalAhorrado + "€");
+
+// En febrero ahorro lo mismo
+dineroMes = 100;
+totalAhorrado = totalAhorrado + dineroMes; // Sumo febrero
+console.log("En febrero ahorré:", dineroMes + "€");
+console.log("Total ahorrado:", totalAhorrado + "€");
+
+// En marzo ahorro más
+dineroMes = 150;
+totalAhorrado = totalAhorrado + dineroMes; // Sumo marzo
+console.log("En marzo ahorré:", dineroMes + "€");
+console.log("Total ahorrado:", totalAhorrado + "€");`}
+/>
+
+### Diferencia entre `let` y `const`
+
+<CodePlayground
+  title="let vs const"
+  jsOnly={true}
+  js={`// CON 'let' - PUEDO CAMBIAR el valor
+let temperatura = 20;
+console.log("Temperatura inicial:", temperatura);
+
+temperatura = 25; // ✅ Permitido, cambio el valor
+console.log("Temperatura nueva:", temperatura);
+
+// CON 'const' - NO PUEDO CAMBIAR el valor
+const PI = 3.14159;
+console.log("PI (constante):", PI);
+
+// const PI = 3.14; ❌ ERROR: No puedo reasignar una constante
+// PI = 2.71; ❌ ERROR: No puedo modificar una constante
+
+// Uso de const: cuando sabes que el valor NO va a cambiar
+const nombreDelPrograma = "Mi Calculadora";
+const anioActual = 2025;
+
+console.log("Programa:", nombreDelPrograma);
+console.log("Año:", anioActual);
+
+// RECOMENDACIÓN: Usa 'const' por defecto, 'let' solo si necesitas cambiar`}
+/>
+
+### Nombres de variables
+
+Las reglas para nombrar variables:
+
+```javascript
+// ✅ VÁLIDO
+let nombre = "Juan";
+let edad = 25;
+let _edad = 25;        // Puede empezar con _
+let $precio = 100;     // Puede empezar con $
+let edadPersona = 30;  // camelCase (recomendado)
+
+// ❌ INVÁLIDO
+let 123abc = 50;       // No puede empezar con número
+let mi-precio = 50;    // No puede llevar guión
+let mi precio = 50;    // No puede llevar espacios
+```
+
+**Recomendación**: Usa **camelCase** (primera palabra en minúscula, siguientes con mayúscula): `miVariable`, `nombrePersona`, `precioTotal`
+
+---
+
+## 2. Entrada y salida de datos
+
+Para que un programa sea útil, debe comunicarse con el usuario. Necesita:
+
+- **Recibir información**: Preguntar datos al usuario
+- **Mostrar información**: Mostrar resultados
+
+### Formas de comunicación
+
+#### 1. `console.log()` - Mostrar mensajes en la consola
+
+Es la forma más común para **aprender y depurar**. Los mensajes aparecen en la consola del navegador.
+
+<CodePlayground
+  title="console.log - Mostrando información"
+  jsOnly={true}
+  js={`// Mostrar texto simple
+console.log("Hola, mundo!");
+console.log("Estoy aprendiendo JavaScript");
+
+// Mostrar variables
+let nombre = "Juan";
+let edad = 25;
+console.log("Mi nombre es:", nombre);
+console.log("Mi edad es:", edad);
+
+// Mostrar múltiples valores en una línea
+console.log("Nombre:", nombre, "Edad:", edad);
+
+// Hacer cálculos y mostrar resultado
+let numero1 = 10;
+let numero2 = 5;
+console.log("La suma es:", numero1 + numero2);
+console.log("La multiplicación es:", numero1 * numero2);
+
+// Mostrar booleanos (verdadero/falso)
+console.log("¿Es verdad?:", true);
+console.log("5 > 3:", 5 > 3);
+console.log("5 === 3:", 5 === 3);`}
+/>
+
+#### 2. `alert()` - Mostrar un mensaje emergente
+
+Un cuadro de diálogo que aparece encima de todo. El usuario debe hacer clic en "Aceptar" para continuar.
+
+<CodePlayground
+  title="alert - Mensajes emergentes"
+  jsOnly={true}
+  js={`// Mensaje simple (comentado para no interrumpir)
+// alert("¡Hola! Este es un mensaje importante");
+
+// Mostrar variable en alert
+let nombre = "María";
+// alert("Bienvenida, " + nombre);
+
+// Crear mensajes personalizados
+let edad = 20;
+let mensaje = "Tienes " + edad + " años";
+// alert(mensaje);
+
+// Ejemplos que sí se pueden probar aquí
+console.log("En navegador real, esto mostraría un alert:");
+console.log("alert('¡Mensaje importante!');");`}
+/>
+
+#### 3. `prompt()` - Pedir información al usuario
+
+Un cuadro de diálogo donde el usuario puede escribir una respuesta.
+
+<CodePlayground
+  title="prompt - Recibir información"
+  jsOnly={true}
+  js={`// Simulación de cómo funciona prompt (comentado)
+// let nombre = prompt("¿Cuál es tu nombre?");
+// console.log("Hola, " + nombre);
+
+// Pedir un número
+// let edad = prompt("¿Cuántos años tienes?");
+// console.log("Tienes " + edad + " años");
+
+// prompt devuelve SIEMPRE un texto (string)
+// Aunque el usuario escriba "25", es texto "25", no número
+let edadTexto = "25";
+console.log("Tipo de dato:", typeof edadTexto); // "string"
+
+// Para convertir a número usamos Number()
+let edadNumero = Number(edadTexto);
+console.log("Tipo de dato convertido:", typeof edadNumero); // "number"
+
+// IMPORTANTE: En este playground no funcionan alert() ni prompt()
+// Pero en un navegador real, puedes usarlos sin problemas
+console.log("En navegador real:");
+console.log("let edad = prompt('¿Tu edad?');");
+console.log("console.log('Tienes ' + edad + ' años');");`}
+/>
+
+### Comparación de los tres métodos
+
+| Método | Uso | Apariencia | Retorna |
+|--------|-----|-----------|---------|
+| `console.log()` | Aprender y depurar | Texto en consola | Nada |
+| `alert()` | Mensaje importante | Cuadro emergente | Nada |
+| `prompt()` | Pedir datos | Cuadro con campo texto | Lo que escribe el usuario (texto) |
+
+### Ejemplo práctico completo
+
+<CodePlayground
+  title="Ejemplo: Saludo personalizado"
+  jsOnly={true}
+  js={`// Simulamos lo que pasaría con prompt (comentado)
+// En navegador real harías esto:
+// let nombre = prompt("¿Cuál es tu nombre?");
+// let edad = prompt("¿Cuántos años tienes?");
+
+// Para este ejemplo, asignamos directamente:
+let nombre = "Juan";
+let edad = 25;
+
+// Mostramos un saludo
+console.log("¡Hola, " + nombre + "!");
+console.log("Veo que tienes " + edad + " años.");
+
+// Calculamos algo
+let anoNacimiento = 2025 - edad;
+console.log("Entonces naciste aproximadamente en " + anoNacimiento);
+
+// Mostramos un resumen
+console.log("\\n--- RESUMEN ---");
+console.log("Nombre: " + nombre);
+console.log("Edad: " + edad);
+console.log("Año de nacimiento: " + anoNacimiento);`}
+/>
+
+---
+
+## 3. Condicionales: Tomar decisiones
+
+Los condicionales permiten que tu programa **tome decisiones** basándose en condiciones. Es como decir: "SI pasa esto, haz aquello; SINO, haz lo otro".
+
+### ¿Por qué son importantes?
+
+Sin condicionales, el código siempre hace lo mismo. Con condicionales, puede comportarse de manera diferente según la situación.
+
+**Ejemplo de la vida real**: 
+- SI hace calor → voy a la playa
+- SINO SI hace frío → me quedo en casa
+- SINO → puedo salir a pasear
+
+### Operadores de comparación
+
+Antes de usar condicionales, necesitas saber cómo **comparar valores**:
+
+| Operador | Significa | Ejemplo | Resultado |
+|----------|-----------|---------|-----------|
+| `===` | Igual (valor Y tipo) | `5 === 5` | `true` |
+| `!==` | No igual | `5 !== 3` | `true` |
+| `>` | Mayor que | `10 > 5` | `true` |
+| `<` | Menor que | `3 < 10` | `true` |
+| `>=` | Mayor o igual | `5 >= 5` | `true` |
+| `<=` | Menor o igual | `3 <= 10` | `true` |
+
+**Importante**: Usa `===` no `==`. El `===` es más seguro.
+
+### Estructura if - else if - else
+
+La estructura es:
+
+```javascript
+if (condición1) {
+  // Código si condición1 es verdadera
+} else if (condición2) {
+  // Código si condición2 es verdadera
+} else {
+  // Código si ninguna condición es verdadera
+}
+```
+
+<CodePlayground
+  title="if - else if - else"
+  jsOnly={true}
+  js={`// Ejemplo 1: Clasificar temperatura
+let temperatura = 25;
+
+console.log("Temperatura: " + temperatura + "°C");
+
+if (temperatura > 30) {
+  console.log("¡Hace mucho calor!");
+} else if (temperatura > 20) {
+  console.log("La temperatura es agradable");
+} else if (temperatura > 10) {
+  console.log("Hace un poco de frío");
+} else {
+  console.log("¡Hace mucho frío!");
+}
+
+// --- OTRO EJEMPLO ---
+console.log("\\n--- Ejemplo 2: Calificar nota ---");
+let nota = 7;
+
+if (nota >= 9) {
+  console.log("Sobresaliente");
+} else if (nota >= 7) {
+  console.log("Aprobado");
+} else if (nota >= 5) {
+  console.log("Suficiente");
+} else {
+  console.log("Suspendido");
+}
+
+// --- OTRO EJEMPLO ---
+console.log("\\n--- Ejemplo 3: Verificar edad ---");
+let edad = 16;
+
+if (edad >= 18) {
+  console.log("Eres mayor de edad");
+} else {
+  console.log("Aún eres menor");
+}`}
+/>
+
+### Operadores lógicos
+
+Puedes combinar condiciones con `&&` (Y), `||` (O), `!` (NO):
+
+<CodePlayground
+  title="Operadores lógicos: && (Y) || (O)"
+  jsOnly={true}
+  js={`// OPERADOR && (Y) - Ambas condiciones deben ser verdaderas
+console.log("--- Operador && (Y) ---");
+let edad = 20;
+let tieneLicencia = true;
+
+if (edad >= 18 && tieneLicencia) {
+  console.log("Puedes conducir");
+} else {
+  console.log("No puedes conducir");
+}
+
+// Otro ejemplo
+let sueldo = 2000;
+let ahorros = 5000;
+
+if (sueldo >= 1500 && ahorros >= 3000) {
+  console.log("Tienes estabilidad económica");
+}
+
+// --- OPERADOR || (O) - Solo una condición necesita ser verdadera ---
+console.log("\\n--- Operador || (O) ---");
+let tieneUno = true;
+let tieneOtro = false;
+
+if (tieneUno || tieneOtro) {
+  console.log("Tienes al menos uno");
+}
+
+let esFinDeSemana = true;
+let esVacaciones = false;
+
+if (esFinDeSemana || esVacaciones) {
+  console.log("¡Día libre!");
+}
+
+// --- OPERADOR ! (NO) - Invierte el resultado ---
+console.log("\\n--- Operador ! (NO) ---");
+let lluvia = false;
+
+if (!lluvia) {  // Si NO llueve
+  console.log("Puedo salir sin paraguas");
+}
+
+let esNoche = true;
+
+if (!esNoche) {
+  console.log("Es de día");
+} else {
+  console.log("Es de noche");
+}`}
+/>
+
+### El operador ternario (forma corta)
+
+Es una forma compacta de escribir un `if-else` en una sola línea:
+
+```javascript
+condición ? valorSiVerdadero : valorSiFalso
+```
+
+<CodePlayground
+  title="Operador ternario"
+  jsOnly={true}
+  js={`// Forma tradicional
+let edad = 20;
+let estado;
+
+if (edad >= 18) {
+  estado = "Mayor de edad";
+} else {
+  estado = "Menor de edad";
+}
+
+console.log(estado);
+
+// Forma ternaria (más corta)
+console.log("\\n--- Con operador ternario ---");
+let estado2 = (edad >= 18) ? "Mayor de edad" : "Menor de edad";
+console.log(estado2);
+
+// Más ejemplos ternarios
+let saldo = 100;
+let mensaje = (saldo > 50) ? "Tienes dinero suficiente" : "Poco dinero";
+console.log(mensaje);
+
+let temperatura = 25;
+let clima = (temperatura > 20) ? "Caluroso" : "Frío";
+console.log(clima);
+
+// Ternario anidado (en cascada)
+let calificacion = 8;
+let resultado = (calificacion >= 9) ? "Excelente" : 
+                (calificacion >= 7) ? "Bien" : 
+                (calificacion >= 5) ? "Aprobado" : 
+                "Suspendido";
+console.log("Tu calificación es: " + resultado);`}
+/>
+
+### Condicional switch
+
+Cuando tienes muchas opciones basadas en UN VALOR, `switch` es más legible:
+
+```javascript
+switch (variable) {
+  case valor1:
+    // Código si variable === valor1
+    break;
+  case valor2:
+    // Código si variable === valor2
+    break;
+  default:
+    // Código si no coincide ningún caso
+}
+```
+
+**Importante**: No olvides el `break;` después de cada caso.
+
+<CodePlayground
+  title="Switch - Múltiples opciones"
+  jsOnly={true}
+  js={`// Ejemplo 1: Día de la semana
+console.log("--- Días de la semana ---");
+let diaSemana = 3;
+let nombreDia;
+
+switch (diaSemana) {
+  case 1:
+    nombreDia = "Lunes";
+    break;
+  case 2:
+    nombreDia = "Martes";
+    break;
+  case 3:
+    nombreDia = "Miércoles";
+    break;
+  case 4:
+    nombreDia = "Jueves";
+    break;
+  case 5:
+    nombreDia = "Viernes";
+    break;
+  case 6:
+    nombreDia = "Sábado";
+    break;
+  case 7:
+    nombreDia = "Domingo";
+    break;
+  default:
+    nombreDia = "Día desconocido";
+}
+
+console.log("Día número " + diaSemana + ": " + nombreDia);
+
+// --- Ejemplo 2: Tipo de fruta ---
+console.log("\\n--- Tipos de fruta ---");
+let fruta = "manzana";
+let color;
+
+switch (fruta) {
+  case "manzana":
+    color = "Roja";
+    break;
+  case "plátano":
+    color = "Amarilla";
+    break;
+  case "fresa":
+    color = "Rosa";
+    break;
+  case "limón":
+    color = "Verde o amarilla";
+    break;
+  default:
+    color = "Color desconocido";
+}
+
+console.log("La " + fruta + " es de color: " + color);`}
+/>
+
+### Comparación: if vs switch
+
+| Caso | Usa `if` | Usa `switch` |
+|------|----------|------------|
+| Una o dos condiciones | ✅ | ❌ |
+| Muchas opciones del mismo valor | ❌ | ✅ |
+| Condiciones complejas | ✅ | ❌ |
+
+---
+
+## 4. Bucles: Repetir código
+
+Los bucles permiten ejecutar un bloque de código **varias veces** sin tener que escribirlo repetidamente. Es como decir: "Repite esta acción 10 veces" en lugar de escribir la acción 10 veces.
+
+### ¿Por qué son útiles?
+
+Imagina que quieres imprimir "Hola" 1000 veces. Sin bucles, tendrías que escribir:
+```javascript
+console.log("Hola");
+console.log("Hola");
+console.log("Hola");
+// ... 997 veces más
+```
+
+Con un bucle, solo escribes:
+```javascript
+for (let i = 0; i < 1000; i++) {
+  console.log("Hola");
+}
+```
+
+### Bucle for (el más común)
+
+Estructura:
+```javascript
+for (inicialización; condición; incremento) {
+  // Código que se repite
+}
+```
+
+- **Inicialización**: Crea una variable (normalmente `i`)
+- **Condición**: Se repite MIENTRAS sea verdadera
+- **Incremento**: Qué pasa al final de cada vuelta (normalmente `i++`)
+
+<CodePlayground
+  title="Bucle for - Lo básico"
+  jsOnly={true}
+  js={`// Ejemplo 1: Contar del 1 al 5
+console.log("--- Contar del 1 al 5 ---");
+for (let i = 1; i <= 5; i++) {
+  console.log("Número:", i);
+}
+
+// Ejemplo 2: Contar del 10 al 1 (hacia atrás)
+console.log("\\n--- Contar hacia atrás ---");
+for (let i = 10; i >= 1; i--) {
+  console.log("Countdown:", i);
+}
+
+// Ejemplo 3: Números pares
+console.log("\\n--- Números pares del 2 al 10 ---");
+for (let i = 2; i <= 10; i = i + 2) {
+  console.log("Par:", i);
+}
+
+// Ejemplo 4: Tabla de multiplicar
+console.log("\\n--- Tabla del 5 ---");
+for (let i = 1; i <= 10; i++) {
+  console.log("5 x " + i + " = " + (5 * i));
+}
+
+// Ejemplo 5: Sumar números
+console.log("\\n--- Suma del 1 al 10 ---");
+let suma = 0;
+for (let i = 1; i <= 10; i++) {
+  suma = suma + i;
+}
+console.log("La suma de 1 a 10 es:", suma);`}
+/>
+
+### Bucle while (repetir mientras algo sea verdadero)
+
+```javascript
+while (condición) {
+  // Código que se repite
+}
+```
+
+Se repite MIENTRAS la condición sea verdadera.
+
+<CodePlayground
+  title="Bucle while"
+  jsOnly={true}
+  js={`// Ejemplo 1: Contador simple
+console.log("--- Contar del 1 al 5 con while ---");
+let contador = 1;
+while (contador <= 5) {
+  console.log("Contador:", contador);
+  contador++;  // IMPORTANTE: Incrementar, o bucle infinito
+}
+
+// Ejemplo 2: Contar dinero que crece
+console.log("\\n--- Dinero que crece cada mes ---");
+let dinero = 100;
+let mes = 1;
+
+while (dinero < 500) {
+  console.log("Mes " + mes + ": " + dinero + "€");
+  dinero = dinero + 50;  // Cada mes gano 50€
+  mes++;
+}
+
+console.log("¡Después de " + (mes - 1) + " meses tengo " + dinero + "€");
+
+// Ejemplo 3: Entrada del usuario (simulada)
+console.log("\\n--- Pedir número hasta obtener correcto ---");
+let numeroSecreto = 7;
+let intentos = 0;
+let intento = 5; // Simulamos intento del usuario
+
+while (intento !== numeroSecreto) {
+  intentos++;
+  console.log("Intento " + intentos + ": ¡Incorrecto!");
+  intento = intento + 1;  // Simulamos que el usuario intenta otro número
+  if (intento === numeroSecreto) {
+    break;  // Salir del bucle
+  }
+}
+
+console.log("¡Correcto! Adivinaste en " + intentos + " intentos");`}
+/>
+
+### Bucle do-while (ejecutar al menos una vez)
+
+```javascript
+do {
+  // Código que se ejecuta al menos UNA VEZ
+} while (condición);
+```
+
+La diferencia con `while` es que **SIEMPRE ejecuta el código al menos una vez**, incluso si la condición es falsa desde el principio.
+
+<CodePlayground
+  title="Bucle do-while"
+  jsOnly={true}
+  js={`// Ejemplo 1: Diferencia entre while y do-while
+console.log("--- while (condición falsa) ---");
+let contador1 = 10;
+while (contador1 < 5) {  // Condición falsa desde el inicio
+  console.log("Esto NO se ejecuta");
+}
+
+console.log("--- do-while (condición falsa) ---");
+let contador2 = 10;
+do {
+  console.log("Esto SÍ se ejecuta al menos una vez");
+} while (contador2 < 5);  // Condición es falsa
+
+// Ejemplo 2: Uso práctico - Validar entrada
+console.log("\\n--- Validar entrada del usuario (simulado) ---");
+let respuesta = "";
+let intento = 0;
+
+do {
+  intento++;
+  console.log("Intento " + intento + ": Esperando respuesta...");
+  // En mundo real aquí vendría: respuesta = prompt("¿Sí o No?");
+  if (intento === 1) respuesta = "quizás"; // Simulamos respuesta incorrecta
+  if (intento === 2) respuesta = "sí";     // Simulamos respuesta correcta
+} while (respuesta !== "sí" && respuesta !== "no");
+
+console.log("Respuesta válida: " + respuesta);`}
+/>
+
+### Controlar bucles: break y continue
+
+- **`break`**: Sale del bucle completamente
+- **`continue`**: Salta a la siguiente iteración
+
+<CodePlayground
+  title="break y continue"
+  jsOnly={true}
+  js={`// Ejemplo 1: break - Salir del bucle
+console.log("--- break: Salir cuando encuentro 5 ---");
+for (let i = 1; i <= 10; i++) {
+  if (i === 5) {
+    console.log("¡Encontré el 5! Saliendo del bucle");
+    break;  // Salimos completamente
+  }
+  console.log("Número:", i);
+}
+
+// Ejemplo 2: continue - Saltar un número
+console.log("\\n--- continue: Saltar números pares ---");
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 === 0) {  // Si es par
+    continue;  // Salta esta iteración
+  }
+  console.log("Número impar:", i);
+}
+
+// Ejemplo 3: Buscar un valor
+console.log("\\n--- Buscar el primer múltiplo de 7 ---");
+for (let i = 1; i <= 100; i++) {
+  if (i % 7 === 0) {
+    console.log("Encontrado:", i);
+    break;
+  }
+}
+
+// Ejemplo 4: Filtrar valores
+console.log("\\n--- Imprimir todo excepto el 5 ---");
+for (let i = 1; i <= 10; i++) {
+  if (i === 5) {
+    continue;  // Salta el 5
+  }
+  console.log(i);
+}`}
+/>
+
+### Comparación de bucles
+
+| Bucle | Cuándo usar |
+|-------|-----------|
+| `for` | Cuando sabes cuántas veces repetir |
+| `while` | Cuando repites hasta que algo cambie |
+| `do-while` | Cuando necesitas ejecutar al menos UNA vez |
+
+### Ejemplo práctico completo
+
+<CodePlayground
+  title="Ejemplo: Calcular promedio"
+  jsOnly={true}
+  js={`// Calcular promedio de calificaciones
+console.log("--- Calcular promedio de 5 calificaciones ---");
+
+let calificaciones = [85, 90, 78, 92, 88];
+let sumaCalificaciones = 0;
+
+// Sumar todas las calificaciones
+for (let i = 0; i < calificaciones.length; i++) {
+  sumaCalificaciones = sumaCalificaciones + calificaciones[i];
+  console.log("Calificación " + (i + 1) + ": " + calificaciones[i]);
+}
+
+let promedio = sumaCalificaciones / calificaciones.length;
+
+console.log("\\nSuma: " + sumaCalificaciones);
+console.log("Promedio: " + promedio);
+
+// Ejemplo 2: Crear una tabla
+console.log("\\n--- Tabla multiplicar ---");
+let tabla = 3;
+for (let i = 1; i <= 10; i++) {
+  console.log(tabla + " x " + i + " = " + (tabla * i));
+}`}
+/>
+
+---
+
+## 5. Funciones: Reutilizar código
+
+Una **función** es un bloque de código que puedes **crear una sola vez y usar muchas veces**. Es como crear tu propio comando.
+
+### ¿Por qué usar funciones?
+
+1. **Reutilizar código**: Escribe una vez, usa cien veces.
+2. **Código más legible**: El código se ve más organizado.
+3. **Mantenimiento**: Si cambias la función, el cambio aplica a todos lados.
+4. **Dividir problemas complejos**: Haces problemas grandes en piezas pequeñas.
+
+### Estructura básica de una función
+
+```javascript
+function nombreFuncion(parámetro1, parámetro2) {
+  // Código de la función
+  return resultado;
+}
+```
+
+- **`function`**: Palabra clave para crear función
+- **`nombreFuncion`**: Nombre descriptivo
+- **`(parámetro1, parámetro2)`**: Datos de entrada (opcionales)
+- **`{ }`**: Bloque de código de la función
+- **`return`**: Lo que devuelve la función (opcional)
+
+### Función simple (sin parámetros)
+
+<CodePlayground
+  title="Función simple"
+  jsOnly={true}
+  js={`// Definir una función
+function saludar() {
+  console.log("¡Hola! Bienvenido a mi programa");
+}
+
+// Usar la función (llamarla)
+console.log("--- Llamando la función ---");
+saludar();
+saludar();
+saludar();
+
+// Ejemplo 2
+function mostrarHora() {
+  console.log("La hora actual es importante");
+}
+
+mostrarHora();`}
+/>
+
+### Función con parámetros (datos de entrada)
+
+Los **parámetros** son valores que la función recibe para trabajar con ellos.
+
+<CodePlayground
+  title="Funciones con parámetros"
+  jsOnly={true}
+  js={`// Función con UN parámetro
+function saludarPersona(nombre) {
+  console.log("¡Hola, " + nombre + "!");
+}
+
+saludarPersona("Juan");
+saludarPersona("María");
+saludarPersona("Carlos");
+
+// --- Función con DOS parámetros ---
+console.log("\\n--- Función de bienvenida ---");
+function bienvenida(nombre, edad) {
+  console.log("Bienvenido, " + nombre);
+  console.log("Tienes " + edad + " años");
+}
+
+bienvenida("Ana", 25);
+bienvenida("Pedro", 30);
+
+// --- Función con TRES parámetros ---
+console.log("\\n--- Presentación completa ---");
+function presentar(nombre, ciudad, profesion) {
+  console.log("Nombre: " + nombre);
+  console.log("Ciudad: " + ciudad);
+  console.log("Profesión: " + profesion);
+}
+
+presentar("Laura", "Madrid", "Ingeniera");
+presentar("Marcos", "Barcelona", "Diseñador");`}
+/>
+
+### Función con return (devolver un valor)
+
+El **`return`** envía un valor de vuelta al lugar donde se llamó la función.
+
+<CodePlayground
+  title="Funciones con return"
+  jsOnly={true}
+  js={`// Función que devuelve un resultado
+function sumar(a, b) {
+  let resultado = a + b;
+  return resultado;
+}
+
+// Usar el resultado
+let suma1 = sumar(5, 3);
+console.log("5 + 3 = " + suma1);
+
+let suma2 = sumar(10, 20);
+console.log("10 + 20 = " + suma2);
+
+// Puedo usar el resultado directamente
+console.log("7 + 8 = " + sumar(7, 8));
+
+// --- Funciones matemáticas ---
+console.log("\\n--- Más funciones ---");
+
+function multiplicar(a, b) {
+  return a * b;
+}
+
+console.log("4 x 5 = " + multiplicar(4, 5));
+
+function calcularArea(largo, ancho) {
+  return largo * ancho;
+}
+
+console.log("Área de 10 x 5: " + calcularArea(10, 5));
+
+// --- Función que devuelve texto ---
+function obtenerEstacion(mes) {
+  if (mes >= 3 && mes <= 5) {
+    return "Primavera";
+  } else if (mes >= 6 && mes <= 8) {
+    return "Verano";
+  } else if (mes >= 9 && mes <= 11) {
+    return "Otoño";
+  } else {
+    return "Invierno";
+  }
+}
+
+console.log("Mes 7 es: " + obtenerEstacion(7));
+console.log("Mes 12 es: " + obtenerEstacion(12));`}
+/>
+
+### Función con return y condicionales
+
+Las funciones pueden hacer lógica compleja:
+
+<CodePlayground
+  title="Funciones con lógica compleja"
+  jsOnly={true}
+  js={`// Función: Verificar si es mayor de edad
+function esMayorDeEdad(edad) {
+  if (edad >= 18) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log("¿17 años es mayor de edad?", esMayorDeEdad(17));
+console.log("¿18 años es mayor de edad?", esMayorDeEdad(18));
+console.log("¿25 años es mayor de edad?", esMayorDeEdad(25));
+
+// --- Versión más corta ---
+console.log("\\n--- Versión corta ---");
+function esAdulto(edad) {
+  return edad >= 18;
+}
+
+console.log("¿20 años es adulto?", esAdulto(20));
+
+// --- Función: Validar contraseña ---
+console.log("\\n--- Validar contraseña ---");
+function esContraseñaFuerte(contrasena) {
+  if (contrasena.length >= 8) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log("¿'abc' es fuerte?", esContraseñaFuerte("abc"));
+console.log("¿'miContraseña123' es fuerte?", esContraseñaFuerte("miContraseña123"));
+
+// --- Función: Calcular descuento ---
+console.log("\\n--- Calcular precio con descuento ---");
+function calcularPrecioFinal(precioOriginal, descuento) {
+  let montoDescuento = precioOriginal * (descuento / 100);
+  let precioFinal = precioOriginal - montoDescuento;
+  return precioFinal;
+}
+
+console.log("Producto de 100€ con 20% descuento: " + calcularPrecioFinal(100, 20) + "€");
+console.log("Producto de 50€ con 10% descuento: " + calcularPrecioFinal(50, 10) + "€");`}
+/>
+
+### Conceptos importantes sobre funciones
+
+**1. El nombre es importante**: Usa nombres que describan qué hace:
+
+```javascript
+// ✅ Bueno
+function calcularTotal(precio1, precio2) { }
+function verificarEdad(edad) { }
+function convertirAFahrenheit(celsius) { }
+
+// ❌ Malo
+function f(x, y) { }
+function hacer(a) { }
+function cosa(n) { }
+```
+
+**2. Parámetros vs Argumentos**:
+- **Parámetro**: Variable en la definición: `function f(parámetro)`
+- **Argumento**: Valor que pasas: `f(argumento)`
+
+**3. La función termina cuando encuentra `return`**:
+
+```javascript
+function ejemplo() {
+  console.log("Esto sí se ejecuta");
+  return 42;
+  console.log("Esto NO se ejecuta");  // Nunca llega aquí
+}
+```
+
+---
+
+## 6. Funciones flecha (Arrow Functions)
+
+Las **funciones flecha** son una forma **más corta y moderna** de escribir funciones. Utilizan la sintaxis `=>` (que parece una flecha).
+
+### Ventajas de las funciones flecha
+
+- Código más corto
+- Sintaxis moderna
+- Se ven profesionales
+- Muy comunes en código JavaScript actual
+
+### Comparación: Función tradicional vs Función flecha
+
+<CodePlayground
+  title="Funciones tradicionales vs Flecha"
+  jsOnly={true}
+  js={`// --- FORMA TRADICIONAL ---
+function cuadrado(numero) {
+  return numero * numero;
+}
+
+console.log("Tradicional:", cuadrado(5));
+
+// --- FORMA FLECHA (largo) ---
+const cuadradoFlecha1 = (numero) => {
+  return numero * numero;
+};
+
+console.log("Flecha (largo):", cuadradoFlecha1(5));
+
+// --- FORMA FLECHA (corta) ---
+// Si solo hay UNA línea y es return, puedes omitirla
+const cuadradoFlecha2 = (numero) => numero * numero;
+
+console.log("Flecha (corta):", cuadradoFlecha2(5));
+
+// Los tres dan el mismo resultado
+console.log("\\nTodos devuelven:", cuadrado(5));`}
+/>
+
+### Sintaxis de funciones flecha
+
+**Con un parámetro:**
+```javascript
+const nombreFuncion = (parámetro) => parámetro * 2;
+```
+
+**Sin parámetros:**
+```javascript
+const nombreFuncion = () => "Hola";
+```
+
+**Con varios parámetros:**
+```javascript
+const nombreFuncion = (a, b) => a + b;
+```
+
+**Varias líneas (con corchetes):**
+```javascript
+const nombreFuncion = (a, b) => {
+  let resultado = a + b;
+  console.log(resultado);
+  return resultado;
+};
+```
+
+### Ejemplos prácticos
+
+<CodePlayground
+  title="Funciones flecha - Ejemplos"
+  jsOnly={true}
+  js={`// Ejemplo 1: Dos parámetros, una línea
+const sumar = (a, b) => a + b;
+console.log("5 + 3 =", sumar(5, 3));
+
+// Ejemplo 2: Restar
+const restar = (a, b) => a - b;
+console.log("10 - 3 =", restar(10, 3));
+
+// Ejemplo 3: Multiplicar
+const multiplicar = (a, b) => a * b;
+console.log("4 x 5 =", multiplicar(4, 5));
+
+// Ejemplo 4: Dividir
+const dividir = (a, b) => a / b;
+console.log("20 / 4 =", dividir(20, 4));
+
+// --- UN SOLO PARÁMETRO (sin paréntesis) ---
+console.log("\\n--- Un parámetro ---");
+
+// Puedes omitir paréntesis si hay UN parámetro
+const duplicar = n => n * 2;
+console.log("Duplicar 5:", duplicar(5));
+
+const cubo = n => n * n * n;
+console.log("Cubo de 3:", cubo(3));
+
+// --- SIN PARÁMETROS ---
+console.log("\\n--- Sin parámetros ---");
+
+const saludar = () => "¡Hola a todos!";
+console.log(saludar());
+
+const obtenerFecha = () => new Date().getFullYear();
+console.log("Año actual:", obtenerFecha());
+
+// --- VARIAS LÍNEAS ---
+console.log("\\n--- Varias líneas ---");
+
+const calcularDescuento = (precio, descuento) => {
+  let montoDescuento = precio * (descuento / 100);
+  let precioFinal = precio - montoDescuento;
+  return precioFinal;
+};
+
+console.log("100€ con 20% descuento:", calcularDescuento(100, 20) + "€");`}
+/>
+
+### Funciones flecha con condicionales
+
+<CodePlayground
+  title="Funciones flecha con lógica"
+  jsOnly={true}
+  js={`// Verificar si es mayor de edad
+const esMayorDeEdad = (edad) => edad >= 18;
+
+console.log("¿17 es mayor?", esMayorDeEdad(17));
+console.log("¿18 es mayor?", esMayorDeEdad(18));
+
+// --- Versión con if completo ---
+const clasificarEdad = (edad) => {
+  if (edad < 13) {
+    return "Niño";
+  } else if (edad < 18) {
+    return "Adolescente";
+  } else {
+    return "Adulto";
+  }
+};
+
+console.log("\\nClasificación:");
+console.log("10 años:", clasificarEdad(10));
+console.log("15 años:", clasificarEdad(15));
+console.log("20 años:", clasificarEdad(20));
+
+// --- Usar ternario en flecha ---
+const obtenerGenero = (letra) => (letra === "M") ? "Masculino" : "Femenino";
+
+console.log("\\nGénero:");
+console.log("M:", obtenerGenero("M"));
+console.log("F:", obtenerGenero("F"));
+
+// --- Función que valida ---
+const esNumeroPar = (numero) => numero % 2 === 0;
+
+console.log("\\n¿Pares?");
+console.log("4 es par:", esNumeroPar(4));
+console.log("7 es par:", esNumeroPar(7));`}
+/>
+
+### Cuándo usar función flecha vs tradicional
+
+| Tipo | Usa flecha | Usa tradicional |
+|------|-----------|-----------------|
+| Función corta | ✅ | ❌ |
+| Función con mucho código | ❌ | ✅ |
+| Código moderno | ✅ | Raro |
+| Métodos de objetos | ⚠️ (es complicado) | ✅ |
+
+### Comparación de sintaxis
+
+<CodePlayground
+  title="Resumiendo: Formas de escribir funciones"
+  jsOnly={true}
+  js={`// ===== FORMA 1: Función tradicional larga =====
+function sumarTradicional(a, b) {
+  let resultado = a + b;
+  console.log("Suma: " + resultado);
+  return resultado;
+}
+
+sumarTradicional(5, 3);
+
+// ===== FORMA 2: Función flecha larga =====
+const sumarFlecha1 = (a, b) => {
+  let resultado = a + b;
+  console.log("Suma: " + resultado);
+  return resultado;
+};
+
+sumarFlecha1(5, 3);
+
+// ===== FORMA 3: Función flecha corta =====
+const sumarFlecha2 = (a, b) => a + b;
+
+console.log("\\nForma corta:", sumarFlecha2(5, 3));
+
+// ===== FORMA 4: Más ejemplos cortos =====
+const restar = (a, b) => a - b;
+const esPositivo = (n) => n > 0;
+const saludar = () => "¡Hola!";
+
+console.log("Restar 10 - 3 =", restar(10, 3));
+console.log("¿5 es positivo?", esPositivo(5));
+console.log(saludar());`}
+/>
+
+---
+
+## 7. Ejercicios prácticos
+
+Ahora es tiempo de **poner en práctica** lo que has aprendido. Cada ejercicio combina varios conceptos. Intenta entender el código y luego **modifícalo** para practicar.
+
+### Ejercicio 1: Número par o impar
+
+Determina si un número es par o impar.
+
+**Concepto clave**: El operador módulo `%` devuelve el resto de una división.
+- Si `número % 2 === 0` → es par
+- Si `número % 2 === 1` → es impar
+
+<CodePlayground
+  title="Ejercicio 1: Par o impar"
+  jsOnly={true}
+  js={`// Función que verifica par o impar
+function esParOImpar(numero) {
+  if (numero % 2 === 0) {
+    return "Es PAR";
+  } else {
+    return "Es IMPAR";
+  }
+}
+
+// Probar la función
+console.log("7:", esParOImpar(7));
+console.log("10:", esParOImpar(10));
+console.log("23:", esParOImpar(23));
+console.log("100:", esParOImpar(100));
+
+// --- Versión con operador ternario (más corta) ---
+console.log("\\n--- Versión más corta ---");
+const esParOImpar2 = (n) => (n % 2 === 0) ? "PAR" : "IMPAR";
+
+console.log("15:", esParOImpar2(15));
+console.log("20:", esParOImpar2(20));
+
+// --- RETO: Modificar el código ---
+// Crea una función que diga si es par, impar, o cero
+// Ejemplo: numero 0 -> "Es CERO"`}
+/>
+
+### Ejercicio 2: Número primo
+
+Determina si un número es primo (solo divisible por 1 y él mismo).
+
+**Concepto clave**: Un número es primo si NO es divisible por ningún número entre 2 y él mismo.
+
+<CodePlayground
+  title="Ejercicio 2: Número primo"
+  jsOnly={true}
+  js={`// Función que verifica si es primo
+function esPrimo(numero) {
+  // Los números menores a 2 NO son primos
+  if (numero < 2) {
+    return false;
+  }
+
+  // Revisamos si es divisible por algún número entre 2 y numero-1
+  for (let i = 2; i < numero; i++) {
+    if (numero % i === 0) {
+      // Si lo es, NO es primo
+      return false;
+    }
+  }
+
+  // Si llegamos aquí, ES primo
+  return true;
+}
+
+// Probar la función
+console.log("¿2 es primo?", esPrimo(2));     // true
+console.log("¿7 es primo?", esPrimo(7));     // true
+console.log("¿10 es primo?", esPrimo(10));   // false
+console.log("¿17 es primo?", esPrimo(17));   // true
+console.log("¿1 es primo?", esPrimo(1));     // false
+
+// --- Contar cuántos primos hay del 1 al 20 ---
+console.log("\\n--- Primos del 1 al 20 ---");
+let contadorPrimos = 0;
+for (let i = 1; i <= 20; i++) {
+  if (esPrimo(i)) {
+    console.log(i + " es primo");
+    contadorPrimos++;
+  }
+}
+console.log("Total de primos: " + contadorPrimos);`}
+/>
+
+### Ejercicio 3: Sumar números del 1 al n
+
+Calcula la suma de todos los números desde 1 hasta n.
+
+**Ejemplo**: Suma del 1 al 5 = 1 + 2 + 3 + 4 + 5 = 15
+
+<CodePlayground
+  title="Ejercicio 3: Suma del 1 al n"
+  jsOnly={true}
+  js={`// Forma 1: Usando un bucle
+function sumarHasta(n) {
+  let suma = 0;
+  for (let i = 1; i <= n; i++) {
+    suma = suma + i;
+  }
+  return suma;
+}
+
+console.log("Suma del 1 al 5:", sumarHasta(5));    // 15
+console.log("Suma del 1 al 10:", sumarHasta(10));  // 55
+console.log("Suma del 1 al 100:", sumarHasta(100)); // 5050
+
+// --- Contar paso a paso ---
+console.log("\\n--- Mostrando el proceso ---");
+function sumarConDetalle(n) {
+  let suma = 0;
+  console.log("Sumando desde 1 hasta " + n);
+  for (let i = 1; i <= n; i++) {
+    suma = suma + i;
+    console.log("Paso " + i + ": suma = " + suma);
+  }
+  return suma;
+}
+
+sumarConDetalle(5);
+
+// --- Fórmula matemática (más rápida) ---
+console.log("\\n--- Usando fórmula ---");
+// Fórmula: suma = n * (n + 1) / 2
+function sumarFormula(n) {
+  return n * (n + 1) / 2;
+}
+
+console.log("Con fórmula, suma del 1 al 5:", sumarFormula(5));
+console.log("Con fórmula, suma del 1 al 100:", sumarFormula(100));`}
+/>
+
+### Ejercicio 4: Tabla de multiplicar
+
+Crea una tabla de multiplicar para cualquier número.
+
+<CodePlayground
+  title="Ejercicio 4: Tabla de multiplicar"
+  jsOnly={true}
+  js={`// Función que muestra la tabla
+function mostrarTabla(numero) {
+  console.log("--- Tabla del " + numero + " ---");
+  for (let i = 1; i <= 10; i++) {
+    let resultado = numero * i;
+    console.log(numero + " x " + i + " = " + resultado);
+  }
+}
+
+mostrarTabla(3);
+
+// Mostrar varias tablas
+console.log("\\n--- Tablas del 1 al 3 ---");
+for (let tabla = 1; tabla <= 3; tabla++) {
+  mostrarTabla(tabla);
+}
+
+// Versión con función flecha
+console.log("\\n--- Usando función flecha ---");
+const tablaFlecha = (n) => {
+  for (let i = 1; i <= 10; i++) {
+    console.log(n + " × " + i + " = " + (n * i));
+  }
+};
+
+tablaFlecha(7);`}
+/>
+
+### Ejercicio 5: Clasificar calificación
+
+Convierte notas numéricas a letras.
+
+<CodePlayground
+  title="Ejercicio 5: Clasificar calificación"
+  jsOnly={true}
+  js={`// Función que clasifica notas
+function clasificarNota(nota) {
+  if (nota >= 9) {
+    return "A - Excelente";
+  } else if (nota >= 7) {
+    return "B - Muy bien";
+  } else if (nota >= 5) {
+    return "C - Bien";
+  } else {
+    return "F - Insuficiente";
+  }
+}
+
+console.log("Nota 9.5:", clasificarNota(9.5));
+console.log("Nota 7.2:", clasificarNota(7.2));
+console.log("Nota 5.0:", clasificarNota(5.0));
+console.log("Nota 3.5:", clasificarNota(3.5));
+
+// --- Con switch ---
+console.log("\\n--- Usando switch ---");
+function obtenerMes(numero) {
+  switch (numero) {
+    case 1: return "Enero";
+    case 2: return "Febrero";
+    case 3: return "Marzo";
+    case 4: return "Abril";
+    case 5: return "Mayo";
+    case 6: return "Junio";
+    case 7: return "Julio";
+    case 8: return "Agosto";
+    case 9: return "Septiembre";
+    case 10: return "Octubre";
+    case 11: return "Noviembre";
+    case 12: return "Diciembre";
+    default: return "Mes inválido";
+  }
+}
+
+console.log("Mes 1:", obtenerMes(1));
+console.log("Mes 7:", obtenerMes(7));
+console.log("Mes 12:", obtenerMes(12));`}
+/>
+
+### Ejercicio 6: Validar contraseña
+
+Verifica que una contraseña cumpla ciertos requisitos.
+
+<CodePlayground
+  title="Ejercicio 6: Validar contraseña"
+  jsOnly={true}
+  js={`// Función completa de validación
+function validarContrasena(contrasena) {
+  // Verificar longitud
+  if (contrasena.length < 8) {
+    return "Contraseña muy corta (mínimo 8 caracteres)";
+  }
+
+  // Verificar si tiene números
+  let tieneNumero = false;
+  for (let i = 0; i < contrasena.length; i++) {
+    let caracter = contrasena[i];
+    if (caracter >= "0" && caracter <= "9") {
+      tieneNumero = true;
+      break;
+    }
+  }
+
+  if (!tieneNumero) {
+    return "Debe contener al menos un número";
+  }
+
+  // Si pasa todas las pruebas
+  return "✓ Contraseña válida";
+}
+
+console.log("'abc123':", validarContrasena("abc123"));
+console.log("'miContraseña123':", validarContrasena("miContraseña123"));
+console.log("'12345678':", validarContrasena("12345678"));
+
+// --- Versión simplificada ---
+console.log("\\n--- Validación simple ---");
+const esContraseñaFuerte = (pwd) => pwd.length >= 8;
+
+console.log("¿'abc' es fuerte?", esContraseñaFuerte("abc"));
+console.log("¿'miContraseña123' es fuerte?", esContraseñaFuerte("miContraseña123"));`}
+/>
+
+### Ejercicio 7: Calcular factorial
+
+El factorial de un número es el producto de todos los números positivos hasta él.
+
+**Ejemplo**: 5! = 5 × 4 × 3 × 2 × 1 = 120
+
+<CodePlayground
+  title="Ejercicio 7: Factorial"
+  jsOnly={true}
+  js={`// Función factorial
+function factorial(numero) {
+  // El factorial de 0 es 1
+  if (numero === 0 || numero === 1) {
+    return 1;
+  }
+
+  let resultado = 1;
+  for (let i = 2; i <= numero; i++) {
+    resultado = resultado * i;
+  }
+  return resultado;
+}
+
+console.log("5! =", factorial(5));      // 120
+console.log("6! =", factorial(6));      // 720
+console.log("10! =", factorial(10));    // 3628800
+console.log("0! =", factorial(0));      // 1
+
+// --- Mostrar el cálculo ---
+console.log("\\n--- Mostrando 5! =");
+let calculo = 1;
+for (let i = 1; i <= 5; i++) {
+  calculo = calculo * i;
+  console.log("Paso " + i + ": " + calculo);
+}`}
+/>
+
+---
+
+## Resumen: Lo que aprendiste
+
+En esta guía completa de JavaScript para principiantes cubrimos:
+
+### 📦 **Variables**
+- Cómo guardar información con `let` y `const`
+- Tipos de datos: números, textos, booleanos
+- Cambiar valores
+
+### 📥 **Entrada y salida**
+- `console.log()` para mostrar datos
+- `alert()` para mensajes emergentes
+- `prompt()` para pedir información
+
+### 🔀 **Condicionales**
+- `if`, `else if`, `else`
+- Operadores de comparación (`===`, `>`, `<`, etc.)
+- Operadores lógicos (`&&`, `||`, `!`)
+- Ternario para decisiones rápidas
+- `switch` para múltiples opciones
+
+### 🔁 **Bucles**
+- `for`: Cuando sabes cuántas veces repetir
+- `while`: Repetir mientras una condición sea verdadera
+- `do-while`: Ejecutar al menos una vez
+- `break` y `continue` para controlar bucles
+
+### 🔧 **Funciones**
+- Crear funciones reutilizables
+- Parámetros y argumentos
+- `return` para devolver valores
+- Funciones flecha: sintaxis moderna y corta
+
+### 🎯 **Ejercicios**
+- Pares/impares, primos, factoriales
+- Tablas de multiplicar
+- Validaciones
+- Y mucho más
+
+---
+
+## Próximos pasos
+
+Ahora que dominas lo básico, puedes aprender:
+
+1. **Arrays** (listas de datos)
+2. **Objetos** (datos organizados)
+3. **Métodos** (funciones de arrays y strings)
+4. **Eventos del navegador** (clicks, cambios, etc.)
+5. **DOM** (manipular páginas web)
+
+**¡Sigue practicando!** La mejor forma de aprender es escribiendo código. Modifica los ejemplos, experimenta y comete errores. Cada error te enseña algo nuevo.

@@ -1,0 +1,143 @@
+---
+import Layout from '../components/Layout.astro';
+
+// Get all markdown files from content directory
+const cssFiles = await Astro.glob('../content/css/*.mdx');
+const jsFiles = await Astro.glob('../content/javascript/*.mdx');
+
+const createNavItems = (files: any[], section: string, sectionIcon: string) => {
+  return files
+    .filter((file: any) => !file.url?.includes('index'))
+    .map((file: any) => ({
+      title: file.frontmatter?.title || file.url?.split('/').pop()?.replace('.mdx', '') || 'Untitled',
+      slug: file.frontmatter?.slug || file.url?.split('/').pop()?.replace('.mdx', '') || 'untitled',
+      description: file.frontmatter?.description || '',
+      section: section,
+      sectionIcon: sectionIcon
+    }))
+    .sort((a: any, b: any) => a.title.localeCompare(b.title));
+};
+
+const cssItems = createNavItems(cssFiles, 'CSS', '🎨');
+const jsItems = createNavItems(jsFiles, 'JavaScript', '⚡');
+const navigationItems = [...cssItems, ...jsItems];
+
+const sections = [
+  { name: 'CSS', icon: '🎨', items: cssItems },
+  { name: 'JavaScript', icon: '⚡', items: jsItems }
+];
+---
+
+<Layout title="Guía CSS Interactiva" description="Aprende CSS con ejemplos interactivos y guías paso a paso">
+  <div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+        Guía de Desarrollo Web Interactiva
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        Aprende CSS y JavaScript de manera práctica con ejemplos interactivos y explicaciones detalladas
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#secciones" class="btn btn-primary">
+          Explorar Secciones
+        </a>
+        <a href="https://developer.mozilla.org" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          Documentación Oficial
+        </a>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <div class="card p-6 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Aprende Paso a Paso</h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Conceptos explicados de manera clara y progresiva, desde lo básico hasta técnicas avanzadas.
+        </p>
+      </div>
+      
+      <div class="card p-6 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Ejemplos Prácticos</h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Cada concepto viene acompañado de ejemplos de código que puedes probar y modificar.
+        </p>
+      </div>
+      
+      <div class="card p-6 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Diseño Responsive</h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Aprende a crear diseños que se adapten a cualquier dispositivo y tamaño de pantalla.
+        </p>
+      </div>
+    </div>
+
+    <!-- Sections Grid -->
+    <div id="secciones" class="mb-12">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">Secciones Disponibles</h2>
+      
+      {sections.map((section) => (
+        <div class="mb-10">
+          <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-3">
+            <span class="text-3xl">{section.icon}</span>
+            <span>{section.name}</span>
+          </h3>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {section.items.map((item) => (
+              <a href={`/${item.slug}`} class="card p-6 hover:shadow-lg transition-shadow duration-200 group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <h4 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {item.title}
+                </h4>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                  {item.description}
+                </p>
+                <div class="mt-4 flex items-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+                  Leer más
+                  <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Getting Started -->
+    <div class="card p-8 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">¿Listo para comenzar?</h2>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">
+        Comienza con los conceptos básicos y ve avanzando a tu propio ritmo
+      </p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a href="/conceptos-fundamentales" class="btn btn-primary">
+          🎨 Comenzar con CSS
+        </a>
+        <a href="/js-conceptos-basicos" class="btn btn-secondary">
+          ⚡ Comenzar con JavaScript
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- API endpoint for navigation -->
+  <script type="application/json" id="navigation-data">
+    {JSON.stringify(navigationItems)}
+  </script>
+</Layout>

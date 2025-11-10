@@ -1,0 +1,526 @@
+---
+title: "Conceptos Fundamentales de CSS"
+slug: "conceptos-fundamentales"
+description: "Guía súper sencilla y divertida para entender colores, herencia, pseudo-clases, bordes, outlines, unidades y efectos interactivos con ejemplos en vivo."
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# Conceptos Fundamentales de CSS 🎨
+
+Imagina que estás decorando tu habitación en una casa hecha con código.  
+CSS es la forma en la que eliges:
+
+- De qué color son las paredes 🧱
+- Cómo se ven los botones y textos ✨
+- Qué pasa cuando pasas el mouse o haces clic 🖱️
+- Qué tan grande es cada cosa 📏
+
+Esta guía está escrita para que incluso alguien de 10 años pueda entenderla.  
+En cada sección tendrás ejemplos interactivos donde puedes cambiar el código y ver qué pasa al instante.
+
+---
+
+## 1. Colores en CSS 🎨🌈
+
+Con CSS puedes pintar textos, fondos y bordes. Hay varias formas de decirle al navegador qué color quieres.
+
+Formas más comunes:
+
+- Nombres: `red`, `blue`, `green`, `pink`
+- Hexadecimal: `#ff0000`, `#00ff00`, `#0000ff`
+- RGB: `rgb(255, 0, 0)` (Rojo, Verde, Azul)
+- HSL: `hsl(0, 100%, 50%)` (Matiz, Saturación, Luminosidad)
+
+### Ejemplo básico de colores
+
+<CodePlayground
+  title="Prueba diferentes formas de colores"
+  html={`<div class="caja">
+  <p>🎨 Cambia los colores en el CSS para ver la magia.</p>
+  <button class="btn">Botón colorido</button>
+</div>`}
+  css={`.caja {
+  padding: 16px;
+  border-radius: 10px;
+  background-color: #f3f4ff; /* Prueba: lightblue, pink, yellow */
+  color: #111827;
+  font-family: system-ui, sans-serif;
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #3b82f6; /* Cambia por red, #22c55e, rgb(255, 196, 0), hsl(280, 80%, 60%) */
+  color: white;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  background-color: #2563eb;
+}`}
+  height="320px"
+/>
+
+Ideas para jugar:
+- Cambia `background-color` de la caja a `pink`, `lightgreen` o `#ffe4e6`.
+- Cambia el color del botón usando `rgb()` o `hsl()`.
+- Usa un color MUY oscuro y luego uno muy claro y mira la diferencia.
+
+---
+
+## 2. Herencia en CSS 👨‍👩‍👧‍👦
+
+La herencia es como cuando una familia comparte características.
+
+Ejemplo:  
+Si el papá (elemento padre) tiene `color: blue`,  
+los hijos (textos dentro) también serán azules, a menos que digan lo contrario.
+
+### Ejemplo visual de herencia
+
+<CodePlayground
+  title="Herencia de color y fuente"
+  html={`<div class="padre">
+  <h2>Soy el padre 💙</h2>
+  <p>Soy un hijo, heredo el color del padre.</p>
+  <div class="hijo-especial">
+    Yo cambio mi color a propósito.
+    <p>Este texto está dentro del hijo especial.</p>
+  </div>
+</div>`}
+  css={`.padre {
+  color: #1d4ed8;          /* Todos los textos dentro serán azules por herencia */
+  font-family: system-ui, sans-serif;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #eff6ff;
+}
+
+.hijo-especial {
+  color: #dc2626;          /* Este bloque rompe la herencia y usa rojo */
+  background-color: #fee2e2;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 6px;
+}`}
+  height="360px"
+/>
+
+Pistas:
+- Quita la línea `color: #dc2626;` de `.hijo-especial` y mira cómo vuelve al azul.
+- Cambia `color` del `.padre` y observa cómo cambian todos los hijos.
+
+---
+
+## 3. Pseudo-clases básicas 🕹️
+
+Las pseudo-clases son "estados especiales".  
+Le dicen a CSS: “cuando pase X cosa, usa este estilo”.
+
+Algunas muy importantes:
+- `:hover` → cuando pasas el mouse
+- `:focus` → cuando haces clic o entras a un input
+- `:active` → mientras mantienes el clic
+- `:visited` → enlaces ya visitados
+
+### Botones con :hover, :active y :focus
+
+<CodePlayground
+  title="Pseudo-clases en acción"
+  html={`<a href="#" class="link">Enlace mágico</a>
+<button class="btn">Botón interactivo</button>
+<input class="campo" placeholder="Haz clic aquí" />`}
+  css={`.link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+/* Enlace visitado */
+.link:visited {
+  color: #6b21a8;
+}
+
+/* Al pasar el mouse */
+.link:hover {
+  color: #dc2626;
+  text-decoration: underline;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background-color: #22c55e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+/* Hover: cuando pasas el mouse */
+.btn:hover {
+  background-color: #16a34a;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Active: mientras haces clic */
+.btn:active {
+  background-color: #15803d;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
+}
+
+.campo {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 2px solid #9ca3af;
+  outline: none;
+}
+
+/* Focus: cuando el input está seleccionado */
+.campo:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+}`}
+  height="420px"
+/>
+
+Prueba:
+- Edita los colores de `:hover`, `:active` y `:focus`.
+- Haz que el botón se haga gigante en `:hover` con `transform: scale(1.2);`.
+
+---
+
+## 4. Border vs Outline 🟥🟦
+
+Ambos dibujan “marcos”, pero no son lo mismo.
+
+- `border`: forma parte de la caja; ocupa espacio, puede cambiar el tamaño total.
+- `outline`: es como un resaltador por fuera; NO ocupa espacio, no mueve nada.
+
+### Comparación visual
+
+<CodePlayground
+  title="Diferencia entre border y outline"
+  html={`<button class="con-borde">Con border</button>
+<button class="con-outline">Con outline</button>`}
+  css={`button {
+  margin: 10px;
+  padding: 10px 18px;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Usa border: ocupa espacio y afecta el tamaño del botón */
+.con-borde {
+  border: 4px solid #ef4444;
+  background-color: #fee2e2;
+}
+
+/* Usa outline: no modifica el tamaño de la caja */
+.con-outline {
+  border: 2px solid transparent;
+  outline: 4px solid #3b82f6;
+  background-color: #eff6ff;
+}`}
+  height="260px"
+/>
+
+Prueba:
+- Cambia `outline` por `border` y mira cómo se mueven los botones.
+- Haz un botón con `border` verde y `outline` amarillo al mismo tiempo.
+
+---
+
+## 5. Pseudo-clases de posición: hijos especiales 👶
+
+Estas pseudo-clases sirven para elegir elementos según su lugar en la lista.
+
+- `:first-child` → primer hijo
+- `:last-child` → último hijo
+- `:nth-child(n)` → hijo número `n` o patrón como `2n`, `2n+1`, `odd`, `even`
+
+### Ejemplo colorido con listas
+
+<CodePlayground
+  title="first-child, last-child y nth-child"
+  html={`<ul class="lista">
+  <li>Elemento 1</li>
+  <li>Elemento 2</li>
+  <li>Elemento 3</li>
+  <li>Elemento 4</li>
+  <li>Elemento 5</li>
+</ul>`}
+  css={`.lista {
+  list-style: none;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.lista li {
+  padding: 10px;
+  margin: 4px 0;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+}
+
+/* Primero */
+.lista li:first-child {
+  background-color: #bbf7d0;
+  font-weight: bold;
+}
+
+/* Último */
+.lista li:last-child {
+  background-color: #fecaca;
+  font-weight: bold;
+}
+
+/* Cada elemento par */
+.lista li:nth-child(even) {
+  background-color: #dbeafe;
+}
+
+/* Tercer elemento exacto */
+.lista li:nth-child(3) {
+  background-color: #facc15;
+  color: #111827;
+  font-weight: 700;
+}`}
+  height="360px"
+/>
+
+Ideas:
+- Cambia `nth-child(even)` por `nth-child(odd)`.
+- Haz que cada 2 elementos tengan un color distinto: `nth-child(2n)`.
+
+---
+
+## 6. Simular estados y efectos (hover, visibilidad y transiciones) ✨
+
+No solo puedes cambiar colores, también puedes crear animaciones suaves.
+
+Herramientas clave:
+- `:hover` → estado al pasar el mouse
+- `opacity` → qué tan visible es algo
+- `transform` → mover, girar, hacer más grande
+- `transition` → hace que el cambio sea suave
+
+### Tarjeta que aparece al pasar el mouse
+
+<CodePlayground
+  title="Mostrar detalles al pasar el mouse"
+  html={`<div class="tarjeta">
+  Pasa el mouse por aquí 🐭
+  <div class="detalle">
+    ¡Sorpresa! 😄 Aquí hay más información.
+  </div>
+</div>`}
+  css={`.tarjeta {
+  width: 260px;
+  padding: 16px;
+  border-radius: 10px;
+  background-color: #eff6ff;
+  border: 2px solid #3b82f6;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Ocultamos el detalle al inicio */
+.detalle {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #bfdbfe;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+/* Al hacer hover en la tarjeta, mostramos el detalle */
+.tarjeta:hover .detalle {
+  opacity: 1;
+  transform: translateY(0);
+}`}
+  height="360px"
+/>
+
+### Botón con transición suave
+
+<CodePlayground
+  title="Botón con transición suave"
+  html={`<button class="btn-transicion">Pasa el mouse lentamente</button>`}
+  css={`.btn-transicion {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-family: system-ui, sans-serif;
+  font-weight: bold;
+  background-color: #6366f1;
+  color: white;
+  transition: background-color 0.4s, transform 0.4s, box-shadow 0.4s;
+}
+
+.btn-transicion:hover {
+  background-color: #22c55e;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+}`}
+  height="260px"
+/>
+
+Prueba:
+- Haz que el botón rote con `transform: rotate(5deg);`
+- Haz aparecer/desaparecer cosas con `opacity` en `:hover`.
+
+---
+
+## 7. Unidades: px, em, rem, %, vw, vh 📏
+
+Las unidades dicen qué tan grandes son las cosas.  
+Vamos a explicarlas como si fueran reglas diferentes:
+
+- `px`: píxeles. Tamaño fijo. Como decir "exactamente 20".
+- `%`: porcentaje del espacio del padre. Depende del contenedor.
+- `em`: relativo al tamaño de fuente del elemento padre.
+- `rem`: relativo al tamaño de fuente raíz (`html`).
+- `vw`: porcentaje del ancho de la ventana. `10vw` = 10% del ancho de la pantalla.
+- `vh`: porcentaje del alto de la ventana. `50vh` = mitad de la pantalla.
+
+### Comparación visual
+
+<CodePlayground
+  title="Comparando unidades: px, em, rem, %, vw, vh"
+  html={`<div class="contenedor">
+  <div class="caja px">100px</div>
+  <div class="caja porcentaje">50%</div>
+</div>
+
+<div class="texto-base">
+  <p>Texto base (16px). Mira las cajas de abajo:</p>
+  <div class="caja em">2em</div>
+  <div class="caja rem">2rem</div>
+</div>
+
+<div class="viewport">
+  <div class="caja vw">20vw</div>
+  <div class="caja vh">15vh</div>
+</div>`}
+  css={`body {
+  font-family: system-ui, sans-serif;
+}
+
+/* Contenedor fijo */
+.contenedor {
+  width: 300px;
+  background-color: #eef2ff;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+
+.caja {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px;
+  border-radius: 6px;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* 100px siempre mide lo mismo */
+.caja.px {
+  width: 100px;
+  height: 40px;
+  background-color: #bfdbfe;
+}
+
+/* 50% depende del ancho del contenedor (300px → 150px) */
+.caja.porcentaje {
+  width: 50%;
+  height: 40px;
+  background-color: #fecaca;
+}
+
+/* Em y rem */
+.texto-base {
+  font-size: 16px;
+  background-color: #f9fafb;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.caja.em {
+  font-size: 16px;
+  width: 2em;   /* 2 x 16px = 32px */
+  height: 2em;
+  background-color: #bbf7d0;
+}
+
+.caja.rem {
+  font-size: 16px;
+  width: 2rem;  /* 2 x font-size raíz (ej: 16px) */
+  height: 2rem;
+  background-color: #fed7e2;
+}
+
+/* Viewport: según la ventana */
+.viewport {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #eff6ff;
+  border-radius: 8px;
+}
+
+.caja.vw {
+  width: 20vw;
+  height: 40px;
+  background-color: #a5b4fc;
+}
+
+.caja.vh {
+  width: 80px;
+  height: 15vh;
+  background-color: #f97316;
+}`}
+  height="520px"
+/>
+
+Explicación sencilla:
+- `px` = tamaño fijo, como una regla rígida.
+- `%` = pedazo de su papá.
+- `em` = crece según la letra del papá.
+- `rem` = crece según la letra principal de la página.
+- `vw`/`vh` = cambian si cambias el tamaño de la ventana.
+
+---
+
+## Mini retos finales 🧩
+
+Prueba directamente en los playgrounds:
+
+1. Cambia los colores usando `rgb()` y `hsl()` hasta crear tu paleta favorita.
+2. Haz un botón que:
+   - Sea verde normalmente,
+   - Morado con sombra al pasar el mouse,
+   - Rojo cuando lo mantienes presionado.
+3. Usa `:first-child` y `:last-child` para marcar el primero y el último elemento de una lista.
+4. Crea una tarjeta que se haga más grande con `:hover` usando `transform` y `transition`.
+5. Haz una caja que ocupe `50%` del ancho del contenedor y compárala con una de `200px`.
+
+Cuando entiendes estos conceptos, ya tienes una base muy sólida de CSS para seguir con Flexbox, Grid y diseños más avanzados dentro de esta misma guía.

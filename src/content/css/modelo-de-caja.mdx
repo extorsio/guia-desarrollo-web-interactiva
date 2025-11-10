@@ -1,0 +1,540 @@
+---
+title: "Modelo de la caja en CSS"
+slug: "modelo-de-caja"
+description: "Entiende paso a paso el modelo de caja, overflow, text-overflow, position, absolute, relative, fixed, sticky y z-index con ejemplos claros e interactivos."
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# Modelo de la caja en CSS
+
+Imagina que cada cosa en una página web es una caja:
+
+- Un botón es una caja.
+- Un texto es una caja.
+- Una imagen es una caja.
+- Una tarjeta, un menú, todo: cajas.
+
+Si entiendes cómo funciona esa caja, entiendes gran parte de CSS.
+
+La caja tiene 4 partes importantes (de adentro hacia afuera):
+
+1. Contenido (content): el texto, imagen, etc.
+2. Relleno (padding): espacio dentro de la caja, alrededor del contenido.
+3. Borde (border): la línea que rodea la caja.
+4. Margen (margin): espacio fuera de la caja, separándola de otras cajas.
+
+## Viendo la caja paso a paso
+
+Vamos a verlo como si fuera una lonchera:
+
+- El sándwich: contenido.
+- El espacio entre el sándwich y las paredes: padding.
+- El plástico duro de la lonchera: border.
+- El espacio entre tu lonchera y la lonchera de tu amigo: margin.
+
+<CodePlayground
+  title="Modelo de caja: contenido, padding, borde y margen"
+  html={`<div class="box">Soy una caja</div>
+<div class="box other">Soy otra caja</div>`}
+  css={`.box {
+  background-color: #e0f7fa;
+  color: #006064;
+  font-family: system-ui, sans-serif;
+  display: inline-block;
+}
+
+.box.other {
+  margin-left: 16px;
+}
+
+/* Activar capas visuales */
+.box {
+  padding: 16px;        /* espacio interno */
+  border: 4px solid #00838f; /* borde */
+  margin: 8px;          /* espacio externo */
+}`}
+ />
+
+Explicación sencilla:
+- Si aumentas el padding, la caja se ve más "gordita por dentro".
+- Si aumentas el border, el marco se hace más grueso.
+- Si aumentas el margin, se separa de otras cajas.
+
+---
+
+## Propiedades de la caja
+
+Hasta ahora vimos la forma básica de la caja (contenido, padding, borde, margen). Ahora vamos a ver propiedades que afectan cómo se calcula el tamaño de esa caja. Esto es clave para que no te confundas cuando algo “no mide lo que esperabas”.
+
+### width y height (ancho y alto)
+
+- `width`: qué tan ancha es la caja.
+- `height`: qué tan alta es la caja.
+
+Pero: lo que ves en pantalla no siempre es solo `width` y `height`. También se suman:
+- padding
+- border
+- (y el margin afecta el espacio alrededor)
+
+Esto puede hacer que tu caja “crezca más” de lo que tú pensabas.
+
+### box-sizing: cómo se calcula el tamaño
+
+`box-sizing` le dice al navegador cómo contar el ancho y alto de la caja.
+
+Hay dos valores importantes:
+
+1. `content-box` (valor por defecto)
+   - Cuando dices `width: 200px`, esos 200px son solo para el contenido.
+   - El padding y el borde se SUMAN aparte.
+   - Resultado: la caja real termina siendo más grande que 200px.
+
+2. `border-box`
+   - Cuando dices `width: 200px`, esos 200px incluyen:
+     - contenido
+     - padding
+     - borde
+   - Resultado: la caja completa mide justo 200px de ancho. Mucho más fácil de controlar.
+
+Piensa en una caja de regalo:
+- content-box: dices “la parte de adentro mide 20 cm” y luego el acolchado y la caja la hacen más grande.
+- border-box: dices “toda la caja mide 20 cm” y lo de adentro se ajusta para que todo encaje.
+
+Veamos la diferencia:
+
+<CodePlayground
+  title="box-sizing: content-box vs border-box"
+  html={`<div class="caja cb">content-box</div>
+<div class="caja bb">border-box</div>`}
+  css={`.caja {
+  display: inline-block;
+  width: 180px;
+  padding: 20px;
+  border: 5px solid #1565c0;
+  margin: 8px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  background: #e3f2fd;
+}
+
+/* Por defecto: content-box */
+.cb {
+  box-sizing: content-box;
+  background: #bbdefb;
+}
+
+/* border-box: el ancho total respeta los 180px */
+.bb {
+  box-sizing: border-box;
+  background: #c8e6c9;
+}`}
+ />
+
+Observa:
+- Ambas dicen `width: 180px`, `padding: 20px`, `border: 5px`.
+- La de `content-box` se ve más grande porque suma padding + borde por fuera.
+- La de `border-box` encaja mejor en el espacio.
+
+En muchos proyectos modernos se usa este truco global:
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+```
+
+Traducción:
+- “Todas las cajas del sitio se calculan con border-box para que sea más fácil controlar el diseño.”
+
+---
+
+## Desbordamiento: overflow
+
+¿Qué pasa si metes demasiado texto dentro de una caja pequeña?
+
+Eso es el desbordamiento (overflow): cuando el contenido quiere salir de la caja.
+
+Las opciones más usadas:
+
+- `overflow: visible;` → Se ve todo, aunque se salga de la caja.
+- `overflow: hidden;` → Corta lo que se sale.
+- `overflow: scroll;` → Aparecen barras de scroll siempre.
+- `overflow: auto;` → Aparecen barras solo si hacen falta.
+
+Piensa en un vaso con agua:
+- visible: el agua se derrama y se ve.
+- hidden: el vaso "corta" lo que se sale, como si no existiera.
+- scroll: el vaso te pone una ruedita para ver lo que sobra.
+- auto: solo muestra la ruedita si realmente se llena demasiado.
+
+<CodePlayground
+  title="Overflow: ¿qué pasa si no cabe el contenido?"
+  html={`<div class="container visible">
+  <strong>visible</strong> - El texto se sale de la caja si es muy largo...
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.
+</div>
+
+<div class="container hidden">
+  <strong>hidden</strong> - El texto que no cabe se corta.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.
+</div>
+
+<div class="container scroll">
+  <strong>scroll</strong> - Siempre muestra barra.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.
+</div>
+
+<div class="container auto">
+  <strong>auto</strong> - Muestra barra solo si hace falta.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.
+</div>`}
+  css={`.container {
+  width: 180px;
+  height: 60px;
+  border: 2px solid #333;
+  margin: 8px;
+  padding: 4px;
+  font-size: 12px;
+  display: inline-block;
+  vertical-align: top;
+  background: #fafafa;
+}
+
+.visible {
+  overflow: visible;
+}
+
+.hidden {
+  overflow: hidden;
+}
+
+.scroll {
+  overflow: scroll;
+}
+
+.auto {
+  overflow: auto;
+}
+
+strong {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 2px;
+  color: #1565c0;
+}`}
+ />
+
+---
+
+## Text-overflow: cuando el texto es demasiado largo
+
+`text-overflow` se usa para controlar cómo se muestra el texto cuando no cabe en el ancho disponible, normalmente junto con:
+
+- `white-space: nowrap;` (no bajar de línea)
+- `overflow: hidden;` (ocultar lo que sobra)
+
+El valor más común:
+- `text-overflow: ellipsis;` → muestra `...` al final.
+
+Piensa en una lista de nombres muy largos donde no quieres romper el diseño.
+
+<CodePlayground
+  title="text-overflow: cortar texto con ..."
+  html={`<div class="item">Nombre super extremadamente largo del producto número 1</div>
+<div class="item">Otro nombre larguísimo que no cabe bien en una fila</div>
+<div class="item">Texto corto</div>`}
+  css={`.item {
+  width: 220px;
+  padding: 8px;
+  margin: 4px 0;
+  border: 1px solid #ccc;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  white-space: nowrap;        /* No bajar de línea */
+  overflow: hidden;           /* Esconder lo que sobra */
+  text-overflow: ellipsis;    /* Mostrar ... al final */
+}`}
+ />
+
+---
+
+## Position: cómo le dices a la caja dónde estar
+
+Por defecto, las cajas se colocan una debajo de otra o al lado según el flujo normal de la página. `position` cambia estas reglas.
+
+Los valores más importantes:
+
+- `static` (por defecto): sigue el flujo normal. No se mueve con `top`, `left`, etc.
+- `relative`: sigue en su lugar, pero puedes moverla un poquito desde ahí.
+- `absolute`: se sale del flujo y se coloca en una posición exacta.
+- `fixed`: se pega a la pantalla, aunque hagas scroll.
+- `sticky`: mezcla de normal + pegado cuando llegas a cierto punto.
+
+Vamos uno por uno con ejemplos sencillos.
+
+---
+
+## Relative y Absolute: trabajan en equipo
+
+Idea clave:
+- `position: relative` marca una caja como "referencia".
+- `position: absolute` coloca una caja usando `top`, `left`, `right`, `bottom` respecto a:
+  - el ancestro más cercano con `position` distinto de `static`, o
+  - la pantalla si no encuentra ninguno.
+
+Imagina:
+- Una caja grande (papá) con `position: relative;`
+- Una cajita (hijo) con `position: absolute; top: 10px; right: 10px;`
+- El hijo se pega en la esquina de la caja papá.
+
+<CodePlayground
+  title="position: relative + absolute dentro del contenedor"
+  html={`<div class="padre">
+  Soy la caja padre
+  <div class="hijo">Hijo absolute</div>
+</div>`}
+  css={`.padre {
+  position: relative;          /* Referencia */
+  width: 260px;
+  height: 140px;
+  border: 3px solid #1565c0;
+  margin: 16px 0;
+  padding: 8px;
+  font-family: system-ui, sans-serif;
+  background: #e3f2fd;
+}
+
+.hijo {
+  position: absolute;          /* Se coloca dentro de .padre */
+  top: 8px;
+  right: 8px;
+  background: #ef5350;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}`}
+ />
+
+Si quitas `position: relative` del padre, el hijo se iría a una esquina del documento (o del área del playground), ya no de la caja.
+
+---
+
+## Centrar con absolute (truco clásico)
+
+Queremos una caja exactamente al centro del contenedor.
+
+Pasos:
+1. Contenedor con `position: relative;`
+2. Caja hija con:
+   - `position: absolute;`
+   - `top: 50%; left: 50%;`
+   - `transform: translate(-50%, -50%);`
+
+Traducción:
+- Llévala al 50% desde arriba y 50% desde la izquierda (al centro),
+- Luego muévela la mitad de su propio ancho y alto hacia atrás para que quede centrada de verdad.
+
+<CodePlayground
+  title="Centrar con position: absolute"
+  html={`<div class="contenedor">
+  <div class="centro">Centro perfecto</div>
+</div>`}
+  css={`.contenedor {
+  position: relative;
+  width: 260px;
+  height: 160px;
+  margin: 16px 0;
+  background: #f1f8e9;
+  border: 2px solid #7cb342;
+}
+
+.centro {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #7cb342;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+}`}
+ />
+
+---
+
+## Fixed: caja pegada a la pantalla
+
+`position: fixed` hace que la caja:
+- No se mueva aunque hagas scroll.
+- Se posicione respecto a la ventana del navegador.
+
+Piensa en:
+- Botón flotante de ayuda.
+- Botón “subir arriba”.
+- Barra fija abajo o arriba.
+
+<CodePlayground
+  title="position: fixed - botón flotante"
+  html={`<div class="contenido-largo">
+  <p>Haz scroll dentro de este cuadro para ver cómo el botón se queda fijo.</p>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+</div>
+<button class="btn-fixed">Ayuda</button>`}
+  css={`.contenido-largo {
+  height: 150px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin-bottom: 8px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+
+/* Nota: En una página real se fija a la ventana.
+   En este playground se fija al área visible del iframe. */
+.btn-fixed {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}`}
+ />
+
+---
+
+## Sticky: se pega cuando llegas
+
+`position: sticky` es como decir:
+- “Compórtate normal… hasta que llegue a este punto. Luego quédate pegado”.
+
+Se usa mucho para:
+- Encabezados de tablas.
+- Menús que se quedan arriba al hacer scroll.
+
+Necesita:
+- `position: sticky;`
+- `top: X;` (cuándo se pega)
+
+<CodePlayground
+  title="position: sticky - título que se pega"
+  html={`<div class="caja-scroll">
+  <h3 class="sticky">Sección importante</h3>
+  <p>Lorem ipsum dolor sit amet 1...</p>
+  <p>Lorem ipsum dolor sit amet 2...</p>
+  <p>Lorem ipsum dolor sit amet 3...</p>
+  <p>Lorem ipsum dolor sit amet 4...</p>
+  <p>Lorem ipsum dolor sit amet 5...</p>
+  <p>Lorem ipsum dolor sit amet 6...</p>
+</div>`}
+  css={`.caja-scroll {
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  margin: 12px 0;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  background: #ffeb3b;
+  padding: 6px;
+  margin: 0;
+  border-bottom: 1px solid #fbc02d;
+}`}
+ />
+
+---
+
+## Z-index: quién va encima
+
+Cuando dos cajas se montan una sobre otra, `z-index` decide quién está arriba.
+
+Reglas importantes:
+- Funciona mejor en elementos con `position` distinto de `static` (relative, absolute, fixed, sticky).
+- Un número más grande = más arriba.
+
+Piensa en cartas apiladas:
+- z-index 1: carta de abajo.
+- z-index 10: carta de arriba.
+
+<CodePlayground
+  title="z-index: controlando la capa superior"
+  html={`<div class="base">Base (z-index: 1)</div>
+<div class="medio">Medio (z-index: 5)</div>
+<div class="arriba">Arriba (z-index: 10)</div>`}
+  css={`.base, .medio, .arriba {
+  position: absolute;
+  width: 130px;
+  height: 80px;
+  padding: 6px;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+}
+
+.base {
+  background: #42a5f5;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+}
+
+.medio {
+  background: #ab47bc;
+  top: 35px;
+  left: 50px;
+  z-index: 5;
+}
+
+.arriba {
+  background: #ef5350;
+  top: 50px;
+  left: 80px;
+  z-index: 10;
+}`}
+ />
+
+Observa:
+- La caja roja tapa a las otras porque tiene el z-index más alto.
+
+---
+
+## Resumen rápido (sin perder claridad)
+
+- Todo es una caja con: contenido, padding, border y margin.
+- `overflow` controla qué pasa si el contenido no entra.
+- `text-overflow` ayuda a mostrar `...` cuando el texto es muy largo.
+- `position` define cómo se coloca la caja:
+  - static: normal.
+  - relative: normal pero se puede ajustar.
+  - absolute: posición exacta dentro de una referencia.
+  - fixed: pegado a la pantalla.
+  - sticky: normal hasta que se pega.
+- `z-index` decide qué caja está por encima cuando se cruzan.
+
+La mejor forma de aprender:
+- Juega con los valores.
+- Cambia números en los ejemplos.
+- Observa cómo se mueven y cambian las cajas.

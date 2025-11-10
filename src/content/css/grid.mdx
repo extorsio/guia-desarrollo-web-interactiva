@@ -1,0 +1,892 @@
+---
+title: "CSS Grid Layout Completo"
+slug: "grid"
+description: "Domina CSS Grid Layout con esta guía completa: desde conceptos básicos hasta técnicas avanzadas. Aprende con ejemplos interactivos y explicaciones paso a paso."
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# CSS Grid Layout: La Guía Definitiva
+
+**CSS Grid Layout** es el sistema de diseño más poderoso de CSS. Imagina que tienes una hoja cuadriculada infinita donde puedes colocar elementos exactamente donde quieres. A diferencia de Flexbox que organiza en una sola dirección, Grid te permite controlar tanto filas como columnas simultáneamente.
+
+## ¿Por qué usar CSS Grid?
+
+CSS Grid resuelve problemas que otros sistemas de layout no pueden:
+
+- **Diseños bidimensionales**: Controla filas Y columnas al mismo tiempo
+- **Layouts complejos**: Headers, sidebars, footers, contenido principal
+- **Responsive sin media queries**: `auto-fit` y `auto-fill` ajustan automáticamente
+- **Áreas con nombre**: Código más legible y mantenible
+- **Precisión absoluta**: Coloca elementos en celdas específicas
+
+## Conceptos Fundamentales
+
+### La Cuadrícula (Grid)
+
+Piensa en Grid como una tabla invisible con líneas numeradas:
+
+```
+Líneas de columna: 1    2    3    4
+Líneas de fila:    +----+----+----+
+                   |    |    |    |
+                   +----+----+----+
+                   |    |    |    |
+                   +----+----+----+
+```
+
+Cada elemento puede ocupar una o más celdas de esta cuadrícula.
+
+### Contenedor vs Elementos
+
+- **Contenedor Grid**: El elemento padre con `display: grid`
+- **Elementos Grid**: Los hijos directos que se colocan en la cuadrícula
+
+## Configuración Básica del Grid
+
+### 1. Crear el Contenedor Grid
+
+Siempre comienza con `display: grid`:
+
+```css
+.contenedor {
+  display: grid;
+}
+```
+
+<CodePlayground 
+  title="Contenedor Grid Básico"
+  html={`<div class="grid">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <div class="item">4</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  background: #f0f0f0;
+  padding: 10px;
+  gap: 10px;
+}
+
+.item {
+  background: #3498db;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+}`}
+/>
+
+### 2. Definir Columnas y Filas
+
+#### `grid-template-columns`
+
+Especifica cuántas columnas hay y su tamaño:
+
+```css
+/* 3 columnas de igual ancho */
+grid-template-columns: 1fr 1fr 1fr;
+
+/* Columnas de diferentes tamaños */
+grid-template-columns: 200px 1fr 200px;
+
+/* Columnas con mínimo y máximo */
+grid-template-columns: minmax(200px, 1fr) 300px;
+```
+
+#### `grid-template-rows`
+
+Igual que columnas, pero para filas:
+
+```css
+/* 2 filas de 100px cada una */
+grid-template-rows: 100px 100px;
+
+/* Filas flexibles */
+grid-template-rows: 100px 1fr 50px;
+```
+
+<CodePlayground 
+  title="Columnas y Filas Básicas"
+  html={`<div class="grid">
+  <div class="item">A</div>
+  <div class="item">B</div>
+  <div class="item">C</div>
+  <div class="item">D</div>
+  <div class="item">E</div>
+  <div class="item">F</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 80px 80px;
+  gap: 15px;
+  background: lightblue;
+  padding: 10px;
+}
+
+.item {
+  background: coral;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}`}
+  controls={[
+    { label: "2 Columnas", action: "cols2", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 80px 80px 80px;
+  gap: 15px;
+  background: lightblue;
+  padding: 10px;
+}
+
+.item {
+  background: coral;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}` },
+    { label: "4 Columnas", action: "cols4", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 80px 80px;
+  gap: 15px;
+  background: lightblue;
+  padding: 10px;
+}
+
+.item {
+  background: coral;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}` },
+    { label: "Tamaños Mixtos", action: "mixed", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px;
+  grid-template-rows: 60px 1fr 60px;
+  gap: 15px;
+  background: lightblue;
+  padding: 10px;
+}
+
+.item {
+  background: coral;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}` }
+  ]}
+/>
+
+---
+
+### 3. Espaciado: `gap`
+
+Separa elementos sin usar `margin`:
+
+```css
+/* Espacio uniforme */
+gap: 20px;
+
+/* Diferente para filas y columnas */
+gap: 10px 20px; /* fila columna */
+```
+
+<CodePlayground 
+  title="Control del Espaciado"
+  html={`<div class="grid">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <div class="item">4</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  background: lightgreen;
+  padding: 15px;
+}
+
+.item {
+  background: green;
+  color: white;
+  padding: 30px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}`}
+  controls={[
+    { label: "Sin Gap", action: "no-gap", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0px;
+  background: lightgreen;
+  padding: 15px;
+}
+
+.item {
+  background: green;
+  color: white;
+  padding: 30px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}` },
+    { label: "Gap Grande", action: "big-gap", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  background: lightgreen;
+  padding: 15px;
+}
+
+.item {
+  background: green;
+  color: white;
+  padding: 30px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}` },
+    { label: "Gap Asimétrico", action: "asym-gap", cssChange: `.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px 20px;
+  background: lightgreen;
+  padding: 15px;
+}
+
+.item {
+  background: green;
+  color: white;
+  padding: 30px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}` }
+  ]}
+/>
+
+---
+
+## Unidades y Funciones Útiles
+
+### `fr` (Fracción)
+
+Divide el espacio disponible:
+
+```css
+/* 3 columnas: 1/4, 2/4, 1/4 del espacio */
+grid-template-columns: 1fr 2fr 1fr;
+```
+
+### `repeat()`
+
+Evita repetir valores:
+
+```css
+/* En lugar de: 1fr 1fr 1fr 1fr */
+grid-template-columns: repeat(4, 1fr);
+
+/* Patrones complejos */
+grid-template-columns: repeat(3, 1fr 2fr);
+```
+
+### `minmax()`
+
+Controla tamaños mínimo y máximo:
+
+```css
+/* Mínimo 200px, máximo flexible */
+grid-template-columns: minmax(200px, 1fr) 300px;
+```
+
+<CodePlayground 
+  title="Funciones repeat() y minmax()"
+  html={`<div class="grid">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <div class="item">4</div>
+  <div class="item">5</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: lightyellow;
+  padding: 10px;
+}
+
+.item {
+  background: orange;
+  padding: 25px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}`}
+/>
+
+---
+
+## Posicionamiento de Elementos
+
+### Colocar Elementos en Celdas Específicas
+
+#### `grid-column` y `grid-row`
+
+```css
+.elemento {
+  /* Columna: desde línea 1 hasta línea 3 */
+  grid-column: 1 / 3;
+  
+  /* Fila: desde línea 1 hasta línea 2 */
+  grid-row: 1 / 2;
+}
+
+/* Usando span */
+.elemento {
+  grid-column: span 2; /* Ocupa 2 columnas */
+  grid-row: span 3;    /* Ocupa 3 filas */
+}
+```
+
+<CodePlayground 
+  title="Posicionamiento Básico"
+  html={`<div class="grid">
+  <div class="header">Header</div>
+  <div class="sidebar">Sidebar</div>
+  <div class="main">Contenido Principal</div>
+  <div class="footer">Footer</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 80px 1fr 60px;
+  gap: 10px;
+  height: 400px;
+  background: #f0f0f0;
+  padding: 10px;
+}
+
+.header {
+  grid-column: 1 / 3;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.sidebar {
+  background: #3498db;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.main {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.footer {
+  grid-column: 1 / 3;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}`}
+  controls={[
+    { label: "Sidebar Derecha", action: "sidebar-right", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 1fr 200px;\n  grid-template-rows: 80px 1fr 60px;\n  gap: 10px;\n  height: 400px;\n  background: #f0f0f0;\n  padding: 10px;\n}\n\n.header {\n  grid-column: 1 / 3;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.sidebar {\n  grid-column: 2 / 3;\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.main {\n  grid-column: 1 / 2;\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.footer {\n  grid-column: 1 / 3;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}" },
+    { label: "Sin Header/Footer", action: "no-header", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 200px 1fr;\n  grid-template-rows: 1fr;\n  gap: 10px;\n  height: 400px;\n  background: #f0f0f0;\n  padding: 10px;\n}\n\n.header {\n  display: none;\n}\n\n.sidebar {\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.main {\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.footer {\n  display: none;\n}" }
+  ]}
+/>
+
+---
+
+## Áreas con Nombre (Named Grid Areas)
+
+Hace el código más legible usando nombres en vez de números mágicos:
+
+```css
+.layout {
+  display: grid;
+  grid-template-areas: 
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.aside { grid-area: aside; }
+.footer { grid-area: footer; }
+```
+
+<CodePlayground 
+  title="Áreas con Nombre"
+  html={`<div class="layout">
+  <header class="header">Cabecera</header>
+  <nav class="sidebar">Navegación</nav>
+  <main class="main">Contenido Principal</main>
+  <aside class="aside">Barra Lateral</aside>
+  <footer class="footer">Pie de Página</footer>
+</div>`}
+  css={`.layout {
+  display: grid;
+  grid-template-areas: 
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+  grid-template-rows: 80px 1fr 60px;
+  gap: 10px;
+  height: 400px;
+  padding: 10px;
+  background: #e0e0e0;
+}
+
+.header { 
+  grid-area: header;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.sidebar { 
+  grid-area: sidebar;
+  background: #3498db;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.main { 
+  grid-area: main;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.aside { 
+  grid-area: aside;
+  background: #e74c3c;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.footer { 
+  grid-area: footer;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}`}
+  controls={[
+    { label: "Sin Aside", action: "no-aside", cssChange: ".layout {\n  display: grid;\n  grid-template-areas: \n    \"header header\"\n    \"sidebar main\"\n    \"footer footer\";\n  grid-template-columns: 200px 1fr;\n  grid-template-rows: 80px 1fr 60px;\n  gap: 10px;\n  height: 400px;\n  padding: 10px;\n  background: #e0e0e0;\n}\n\n.header { \n  grid-area: header;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.sidebar { \n  grid-area: sidebar;\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.main { \n  grid-area: main;\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.aside { \n  display: none;\n}\n\n.footer { \n  grid-area: footer;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}" },
+    { label: "Sidebar Derecha", action: "sidebar-right", cssChange: ".layout {\n  display: grid;\n  grid-template-areas: \n    \"header header header\"\n    \"main sidebar aside\"\n    \"footer footer footer\";\n  grid-template-rows: 80px 1fr 60px;\n  gap: 10px;\n  height: 400px;\n  padding: 10px;\n  background: #e0e0e0;\n}\n\n.header { \n  grid-area: header;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.sidebar { \n  grid-area: sidebar;\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.main { \n  grid-area: main;\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.aside { \n  grid-area: aside;\n  background: #e74c3c;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}\n\n.footer { \n  grid-area: footer;\n  background: #2c3e50;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n}" }
+  ]}
+/>
+
+## Propiedades de Alineación
+
+#### Para elementos individuales:
+- `justify-self`: Alineación horizontal
+- `align-self`: Alineación vertical
+
+#### Para todo el grid:
+- `justify-items`: Alineación horizontal de todos los elementos
+- `align-items`: Alineación vertical de todos los elementos
+
+#### Para el contenido del grid:
+- `justify-content`: Alineación horizontal del grid completo
+- `align-content`: Alineación vertical del grid completo
+
+<CodePlayground 
+  title="Alineación de Elementos"
+  html={`<div class="grid">
+  <div class="item small">A</div>
+  <div class="item small">B</div>
+  <div class="item small">C</div>
+  <div class="item large">Grande</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  height: 300px;
+  background: lightcyan;
+  padding: 10px;
+  justify-items: stretch;
+  align-items: stretch;
+}
+
+.item {
+  background: teal;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.large {
+  grid-column: span 2;
+}`}
+  controls={[
+    { label: "Centro", action: "center", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 1fr 1fr;\n  gap: 10px;\n  height: 300px;\n  background: lightcyan;\n  padding: 10px;\n  justify-items: center;\n  align-items: center;\n}\n\n.item {\n  background: teal;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n  font-size: 1.2rem;\n}\n\n.large {\n  grid-column: span 2;\n}" },
+    { label: "Inicio", action: "start", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 1fr 1fr;\n  gap: 10px;\n  height: 300px;\n  background: lightcyan;\n  padding: 10px;\n  justify-items: start;\n  align-items: start;\n}\n\n.item {\n  background: teal;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n  font-size: 1.2rem;\n}\n\n.large {\n  grid-column: span 2;\n}" },
+    { label: "Fin", action: "end", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 1fr 1fr;\n  gap: 10px;\n  height: 300px;\n  background: lightcyan;\n  padding: 10px;\n  justify-items: end;\n  align-items: end;\n}\n\n.item {\n  background: teal;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n  font-size: 1.2rem;\n}\n\n.large {\n  grid-column: span 2;\n}" }
+  ]}
+/>
+
+## Grid Automático y Flujo
+
+### `grid-auto-columns` y `grid-auto-rows`
+
+Definen tamaños para filas/columnas creadas automáticamente:
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 200px 200px; /* Solo 2 columnas explícitas */
+  grid-auto-columns: 100px; /* Nuevas columnas de 100px */
+  grid-auto-rows: 50px; /* Nuevas filas de 50px */
+}
+```
+
+### `grid-auto-flow`
+
+Controla cómo se colocan elementos automáticamente:
+
+```css
+grid-auto-flow: row;    /* Por filas (default) */
+grid-auto-flow: column; /* Por columnas */
+grid-auto-flow: dense;  /* Llena huecos */
+```
+
+<CodePlayground 
+  title="Flujo Automático"
+  html={`<div class="grid">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <div class="item">4</div>
+  <div class="item">5</div>
+  <div class="item">6</div>
+  <div class="item">7</div>
+</div>`}
+  css={`.grid {
+  display: grid;
+  grid-template-columns: 150px 150px 150px;
+  grid-template-rows: 100px 100px;
+  grid-auto-rows: 80px;
+  gap: 10px;
+  background: lightcoral;
+  padding: 10px;
+}
+
+.item {
+  background: crimson;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}`}
+  controls={[
+    { label: "Por Columnas", action: "column-flow", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 150px 150px;\n  grid-template-rows: 100px 100px 100px;\n  grid-auto-columns: 120px;\n  grid-auto-flow: column;\n  gap: 10px;\n  background: lightcoral;\n  padding: 10px;\n}\n\n.item {\n  background: crimson;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n}" },
+    { label: "Dense", action: "dense", cssChange: ".grid {\n  display: grid;\n  grid-template-columns: 150px 150px 150px;\n  grid-template-rows: 100px 100px;\n  grid-auto-rows: 80px;\n  grid-auto-flow: dense;\n  gap: 10px;\n  background: lightcoral;\n  padding: 10px;\n}\n\n.item {\n  background: crimson;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n}\n\n.item:nth-child(3) {\n  grid-column: span 2;\n}\n\n.item:nth-child(5) {\n  grid-row: span 2;\n}" }
+  ]}
+/>
+
+## Diseño Responsive con Grid
+
+### `auto-fit` vs `auto-fill`
+
+```css
+/* auto-fill: Crea columnas incluso si no hay contenido */
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+/* auto-fit: Ajusta columnas al espacio disponible */
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+```
+
+<CodePlayground 
+  title="auto-fit vs auto-fill"
+  html={`<div class="gallery">
+  <div class="photo">📷 1</div>
+  <div class="photo">📷 2</div>
+  <div class="photo">📷 3</div>
+  <div class="photo">📷 4</div>
+  <div class="photo">📷 5</div>
+</div>`}
+  css={`.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.photo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}`}
+  controls={[
+    { label: "auto-fill", action: "auto-fill", cssChange: ".gallery {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 15px;\n  padding: 20px;\n  background: #f5f5f5;\n}\n\n.photo {\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  padding: 60px 20px;\n  border-radius: 8px;\n  text-align: center;\n  font-size: 1.2rem;\n  box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n}" },
+    { label: "Más Columnas", action: "more-cols", cssChange: ".gallery {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));\n  gap: 15px;\n  padding: 20px;\n  background: #f5f5f5;\n}\n\n.photo {\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  padding: 40px 20px;\n  border-radius: 8px;\n  text-align: center;\n  font-size: 1rem;\n  box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n}" },
+    { label: "Columnas Grandes", action: "big-cols", cssChange: ".gallery {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 15px;\n  padding: 20px;\n  background: #f5f5f5;\n}\n\n.photo {\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  padding: 80px 20px;\n  border-radius: 8px;\n  text-align: center;\n  font-size: 1.4rem;\n  box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n}" }
+  ]}
+/>
+
+## Ejemplos Prácticos Avanzados
+
+### Galería de imágenes responsive
+
+<CodePlayground 
+  title="Galería con auto-fit"
+  html={`<div class="gallery">
+  <div class="photo">📷 Foto 1</div>
+  <div class="photo">📷 Foto 2</div>
+  <div class="photo">📷 Foto 3</div>
+  <div class="photo">📷 Foto 4</div>
+  <div class="photo">📷 Foto 5</div>
+  <div class="photo">📷 Foto 6</div>
+</div>`}
+  css={`.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  /* auto-fit ajusta automáticamente las columnas */
+  gap: 15px;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.photo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}`}
+/>
+
+---
+
+### Layout de Dashboard
+
+<CodePlayground 
+  title="Dashboard Completo"
+  html={`<div class="dashboard">
+  <div class="nav">Navegación</div>
+  <div class="stats">Estadísticas</div>
+  <div class="chart">Gráfico</div>
+  <div class="list">Lista</div>
+  <div class="footer">Pie de Página</div>
+</div>`}
+  css={`.dashboard {
+  display: grid;
+  grid-template-areas:
+    "nav nav nav"
+    "stats chart chart"
+    "list chart chart"
+    "footer footer footer";
+  grid-template-columns: 200px 1fr 1fr;
+  grid-template-rows: 60px 150px 150px 40px;
+  gap: 15px;
+  padding: 15px;
+  background: #ecf0f1;
+  height: 450px;
+}
+
+.nav {
+  grid-area: nav;
+  background: #34495e;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.stats {
+  grid-area: stats;
+  background: #3498db;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.chart {
+  grid-area: chart;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.list {
+  grid-area: list;
+  background: #e74c3c;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.footer {
+  grid-area: footer;
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}`}
+  controls={[
+    { label: "Vista Móvil", action: "mobile", cssChange: ".dashboard {\n  display: grid;\n  grid-template-areas:\n    \"nav\"\n    \"stats\"\n    \"chart\"\n    \"list\"\n    \"footer\";\n  grid-template-columns: 1fr;\n  grid-template-rows: 60px 120px 200px 120px 40px;\n  gap: 10px;\n  padding: 15px;\n  background: #ecf0f1;\n  height: 600px;\n}\n\n.nav {\n  grid-area: nav;\n  background: #34495e;\n  color: white;\n  padding: 15px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  font-weight: bold;\n}\n\n.stats {\n  grid-area: stats;\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.chart {\n  grid-area: chart;\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.list {\n  grid-area: list;\n  background: #e74c3c;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.footer {\n  grid-area: footer;\n  background: #2c3e50;\n  color: white;\n  padding: 10px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 0.9rem;\n}" },
+    { label: "Sin Footer", action: "no-footer", cssChange: ".dashboard {\n  display: grid;\n  grid-template-areas:\n    \"nav nav nav\"\n    \"stats chart chart\"\n    \"list chart chart\";\n  grid-template-columns: 200px 1fr 1fr;\n  grid-template-rows: 60px 150px 150px;\n  gap: 15px;\n  padding: 15px;\n  background: #ecf0f1;\n  height: 400px;\n}\n\n.nav {\n  grid-area: nav;\n  background: #34495e;\n  color: white;\n  padding: 15px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  font-weight: bold;\n}\n\n.stats {\n  grid-area: stats;\n  background: #3498db;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.chart {\n  grid-area: chart;\n  background: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.list {\n  grid-area: list;\n  background: #e74c3c;\n  color: white;\n  padding: 20px;\n  border-radius: 5px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 1.2rem;\n}\n\n.footer {\n  display: none;\n}" }
+  ]}
+/>
+
+---
+
+### Cards con Diferentes Tamaños
+
+<CodePlayground 
+  title="Cards Adaptativas"
+  html={`<div class="cards">
+  <div class="card featured">Destacado</div>
+  <div class="card">Normal</div>
+  <div class="card">Normal</div>
+  <div class="card wide">Ancho</div>
+  <div class="card">Normal</div>
+  <div class="card tall">Alto</div>
+</div>`}
+  css={`.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.featured {
+  grid-row: span 2;
+  grid-column: span 2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.wide {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.tall {
+  grid-row: span 2;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}`}
+  controls={[
+    { label: "Vista Compacta", action: "compact", cssChange: ".cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n  gap: 10px;\n  padding: 20px;\n  background: #f8f9fa;\n}\n\n.card {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n  box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n  font-size: 0.9rem;\n  transition: transform 0.3s;\n}\n\n.card:hover {\n  transform: translateY(-5px);\n  box-shadow: 0 4px 12px rgba(0,0,0,0.2);\n}\n\n.featured {\n  grid-row: span 2;\n  grid-column: span 2;\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n}\n\n.wide {\n  grid-column: span 2;\n  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);\n  color: white;\n}\n\n.tall {\n  grid-row: span 2;\n  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);\n  color: white;\n}" },
+    { label: "Sin Especiales", action: "no-special", cssChange: ".cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));\n  gap: 15px;\n  padding: 20px;\n  background: #f8f9fa;\n}\n\n.card {\n  background: white;\n  padding: 30px;\n  border-radius: 8px;\n  box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-weight: bold;\n  transition: transform 0.3s;\n}\n\n.card:hover {\n  transform: translateY(-5px);\n  box-shadow: 0 4px 12px rgba(0,0,0,0.2);\n}\n\n.featured, .wide, .tall {\n  background: white;\n  color: black;\n  grid-row: span 1;\n  grid-column: span 1;\n}" }
+  ]}
+/>
+
+---
+
+## Mejores Prácticas
+
+1. **Usa Grid para layouts bidimensionales** - filas Y columnas
+2. **Combina con Flexbox** para alinear contenido dentro de celdas
+3. **Nombra áreas** para layouts complejos y mantenibles
+4. **`auto-fit/auto-fill`** para responsive sin media queries
+5. **`minmax()`** para control flexible de tamaños
+6. **Prueba en diferentes tamaños** de pantalla
+7. **Usa `grid-auto-flow: dense`** para llenar huecos eficientemente
+8. **Define filas explícitas** cuando conozcas la altura
+9. **Usa `fr`** para distribución flexible del espacio
+10. **Combina `grid-template-areas`** con media queries para responsive
+
+## Compatibilidad
+
+CSS Grid funciona en todos los navegadores modernos:
+- ✅ Chrome 57+ (2017)
+- ✅ Firefox 52+ (2017)  
+- ✅ Safari 10.1+ (2017)
+- ✅ Edge 16+ (2017)
+
+Para navegadores antiguos, considera fallbacks con Flexbox.
+
+---
+
+**¡Domina CSS Grid!** Es la herramienta definitiva para layouts modernos. Experimenta con estos ejemplos y crea diseños increíbles.

@@ -1,0 +1,469 @@
+---
+interface ControlOption {
+  label: string;
+  value: string;
+}
+
+interface ControlConfig {
+  label: string;
+  property: string;
+  selector?: string;
+  options: ControlOption[];
+  defaultValue: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  items?: number;
+  height?: string;
+  controls?: ControlConfig[];
+}
+
+const {
+  title = "Flexbox Playground",
+  description = "Prueba visualmente las propiedades de Flexbox cambiando botones.",
+  items = 4,
+  height = "260px",
+  controls = [
+    {
+      label: "flex-direction",
+      property: "flex-direction",
+      options: [
+        { label: "row", value: "row" },
+        { label: "row-reverse", value: "row-reverse" },
+        { label: "column", value: "column" },
+        { label: "column-reverse", value: "column-reverse" },
+      ],
+      defaultValue: "row",
+    },
+    {
+      label: "justify-content",
+      property: "justify-content",
+      options: [
+        { label: "flex-start", value: "flex-start" },
+        { label: "center", value: "center" },
+        { label: "flex-end", value: "flex-end" },
+        { label: "space-between", value: "space-between" },
+        { label: "space-around", value: "space-around" },
+        { label: "space-evenly", value: "space-evenly" },
+      ],
+      defaultValue: "flex-start",
+    },
+    {
+      label: "align-items",
+      property: "align-items",
+      options: [
+        { label: "stretch", value: "stretch" },
+        { label: "flex-start", value: "flex-start" },
+        { label: "center", value: "center" },
+        { label: "flex-end", value: "flex-end" },
+        { label: "baseline", value: "baseline" },
+      ],
+      defaultValue: "stretch",
+    },
+    {
+      label: "flex-wrap",
+      property: "flex-wrap",
+      options: [
+        { label: "nowrap", value: "nowrap" },
+        { label: "wrap", value: "wrap" },
+        { label: "wrap-reverse", value: "wrap-reverse" },
+      ],
+      defaultValue: "nowrap",
+    },
+    {
+      label: "gap",
+      property: "gap",
+      options: [
+        { label: "0", value: "0" },
+        { label: "8px", value: "8px" },
+        { label: "16px", value: "16px" },
+        { label: "24px", value: "24px" },
+      ],
+      defaultValue: "16px",
+    },
+  ],
+} = Astro.props;
+
+const playgroundId = `flex-playground-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="fp-container" data-flex-playground-id={playgroundId}>
+  <div class="fp-header">
+    <div>
+      <h3 class="fp-title">{title}</h3>
+      {description && <p class="fp-description">{description}</p>}
+    </div>
+    <button class="fp-reset" type="button" data-fp-reset>
+      Resetear
+    </button>
+  </div>
+
+  <div class="fp-controls">
+    {controls.map((control) => (
+      <div class="fp-control-group">
+        <span class="fp-control-label">{control.label}</span>
+        <div class="fp-control-buttons" data-fp-control={control.property}>
+          {control.options.map((opt) => (
+            <button
+              type="button"
+              class={
+                "fp-chip" +
+                (opt.value === control.defaultValue ? " fp-chip-active" : "")
+              }
+              data-fp-value={opt.value}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="fp-layout">
+    <div class="fp-code">
+      <div class="fp-code-label">CSS generado</div>
+      <pre class="fp-code-block">
+.flex-container &#123;
+  display: flex;
+  flex-direction: <span data-fp-css="flex-direction">row</span>;
+  justify-content: <span data-fp-css="justify-content">flex-start</span>;
+  align-items: <span data-fp-css="align-items">stretch</span>;
+  flex-wrap: <span data-fp-css="flex-wrap">nowrap</span>;
+  gap: <span data-fp-css="gap">16px</span>;
+&#125;
+      </pre>
+    </div>
+
+    <div class="fp-preview-wrapper" style={`height: ${height}`}>
+      <div class="fp-preview-label">Vista previa</div>
+      <div class="flex-container" data-fp-target>
+        {Array.from({ length: items }).map((_, i) => (
+          <div class="fp-item">Item {i + 1}</div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fp-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1rem 1rem 1.25rem;
+    margin: 2rem 0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  :global(.dark) .fp-container {
+    border-color: #374151;
+    background: #111827;
+  }
+
+  .fp-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .fp-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  :global(.dark) .fp-title {
+    color: #f9fafb;
+  }
+
+  .fp-description {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  :global(.dark) .fp-description {
+    color: #9ca3af;
+  }
+
+  .fp-reset {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: none;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: #e5e7eb;
+    color: #111827;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+  }
+
+  .fp-reset:hover {
+    background: #3b82f6;
+    color: #ffffff;
+  }
+
+  .fp-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    padding: 0.35rem 0.25rem 0.5rem;
+    border-radius: 8px;
+    background: #f9fafb;
+  }
+
+  :global(.dark) .fp-controls {
+    background: #111827;
+  }
+
+  .fp-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .fp-control-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+  }
+
+  .fp-control-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .fp-chip {
+    border-radius: 999px;
+    padding: 0.18rem 0.6rem;
+    font-size: 0.7rem;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  :global(.dark) .fp-chip {
+    background: #111827;
+    border-color: #374151;
+    color: #9ca3af;
+  }
+
+  .fp-chip:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+  }
+
+  :global(.dark) .fp-chip:hover {
+    background: #1f2937;
+    border-color: #3b82f6;
+    color: #bfdbfe;
+  }
+
+  .fp-chip-active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+  }
+
+  :global(.dark) .fp-chip-active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+  }
+
+  .fp-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: 0.75rem;
+    align-items: stretch;
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 800px) {
+    .fp-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .fp-code {
+    border-radius: 8px;
+    background: #0f172a;
+    color: #e5e7eb;
+    padding: 0.5rem 0.6rem 0.6rem;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+      Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .fp-code-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9ca3af;
+  }
+
+  .fp-code-block {
+    margin: 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .fp-preview-wrapper {
+    border-radius: 8px;
+    background: #f9fafb;
+    padding: 0.45rem 0.45rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  :global(.dark) .fp-preview-wrapper {
+    background: #020817;
+  }
+
+  .fp-preview-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9ca3af;
+  }
+
+  .flex-container {
+    flex: 1;
+    display: flex;
+    border-radius: 6px;
+    padding: 0.55rem;
+    background: #eff6ff;
+    overflow: hidden;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  :global(.dark) .flex-container {
+    background: #111827;
+  }
+
+  .fp-item {
+    min-width: 52px;
+    min-height: 32px;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  }
+</style>
+
+<script>
+  function initFlexPlayground(root) {
+    const target = root.querySelector("[data-fp-target]");
+    if (!target) return;
+
+    const cssSpans = root.querySelectorAll("[data-fp-css]");
+    const resetBtn = root.querySelector("[data-fp-reset]");
+
+    const defaultValues = {};
+    cssSpans.forEach((span) => {
+      const prop = span.getAttribute("data-fp-css");
+      if (!prop) return;
+      defaultValues[prop] = span.textContent || "";
+    });
+
+    function applyStateFromChips() {
+      const controls = root.querySelectorAll("[data-fp-control]");
+      const current = { ...defaultValues };
+
+      controls.forEach((container) => {
+        const property = container.getAttribute("data-fp-control");
+        if (!property) return;
+        const active = container.querySelector(".fp-chip-active");
+        if (!active) return;
+        const value = active.getAttribute("data-fp-value");
+        if (!value) return;
+        current[property] = value;
+      });
+
+      Object.entries(current).forEach(([prop, value]) => {
+        target.style.setProperty(prop, value);
+        const span = root.querySelector(`[data-fp-css="${prop}"]`);
+        if (span) span.textContent = value;
+      });
+    }
+
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest(".fp-chip");
+      if (!btn || !root.contains(btn)) return;
+
+      const container = btn.closest("[data-fp-control]");
+      if (!container) return;
+
+      container
+        .querySelectorAll(".fp-chip")
+        .forEach((el) => el.classList.remove("fp-chip-active"));
+      btn.classList.add("fp-chip-active");
+
+      applyStateFromChips();
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        root.querySelectorAll("[data-fp-control]").forEach((container) => {
+          const property = container.getAttribute("data-fp-control");
+          const def = property ? defaultValues[property] : null;
+          const chips = container.querySelectorAll(".fp-chip");
+          let applied = false;
+          chips.forEach((chip) => {
+            const val = chip.getAttribute("data-fp-value");
+            if (!applied && def && val === def) {
+              chip.classList.add("fp-chip-active");
+              applied = true;
+            } else {
+              chip.classList.remove("fp-chip-active");
+            }
+          });
+          if (!applied && chips[0]) {
+            chips[0].classList.add("fp-chip-active");
+          }
+        });
+        applyStateFromChips();
+      });
+    }
+
+    applyStateFromChips();
+  }
+
+  function setupAllFlexPlaygrounds() {
+    document
+      .querySelectorAll("[data-flex-playground-id]")
+      .forEach((root) => initFlexPlayground(root));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupAllFlexPlaygrounds);
+  } else {
+    setupAllFlexPlaygrounds();
+  }
+
+  document.addEventListener("astro:after-swap", setupAllFlexPlaygrounds);
+</script>

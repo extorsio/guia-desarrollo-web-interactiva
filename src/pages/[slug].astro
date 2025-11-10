@@ -1,0 +1,158 @@
+---
+import Layout from '../components/Layout.astro';
+
+// Get all possible slugs for getStaticPaths
+export async function getStaticPaths() {
+  const cssFiles = await Astro.glob('../content/css/*.mdx');
+  const jsFiles = await Astro.glob('../content/javascript/*.mdx');
+  
+  const allFiles = [...cssFiles, ...jsFiles];
+  
+  const paths = allFiles.map(file => {
+    const slug = file.frontmatter?.slug || file.url.split('/').pop()?.replace('.mdx', '') || 'untitled';
+    return {
+      params: { slug },
+      props: { file }
+    };
+  });
+  
+  return paths;
+}
+
+// Get the current file from props
+const { file: currentFile } = Astro.props;
+const slug = Astro.params.slug;
+
+// If file not found, return 404
+if (!currentFile) {
+  return Astro.redirect('/404');
+}
+
+// Get all navigation items - reload for component
+const cssFiles = await Astro.glob('../content/css/*.mdx');
+const jsFiles = await Astro.glob('../content/javascript/*.mdx');
+
+const createNavItems = (files: any[]) => {
+  return files.map(file => ({
+    title: file.frontmatter?.title || file.url.split('/').pop()?.replace('.mdx', '') || 'Untitled',
+    slug: file.frontmatter?.slug || file.url.split('/').pop()?.replace('.mdx', '') || 'untitled',
+    description: file.frontmatter?.description || ''
+  }));
+};
+
+const navigationItems = [
+  ...createNavItems(cssFiles),
+  ...createNavItems(jsFiles)
+].sort((a, b) => a.title.localeCompare(b.title));
+
+// Get current page info
+const currentPage = {
+  title: currentFile.frontmatter?.title || slug,
+  description: currentFile.frontmatter?.description || 'CSS Guide',
+  slug: slug
+};
+
+// Generate breadcrumb
+const breadcrumb = [
+  { name: 'Inicio', href: '/' },
+  { name: currentPage.title, href: `/${slug}` }
+];
+---
+
+<Layout title={currentPage.title} description={currentPage.description}>
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-8" aria-label="Breadcrumb">
+      <ol class="flex items-center space-x-2">
+        {breadcrumb.map((item, index) => (
+          <li class="flex items-center">
+            {index > 0 && (
+              <svg class="w-4 h-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+              </svg>
+            )}
+            <a 
+              href={item.href} 
+              class={`text-sm font-medium transition-colors ${
+                index === breadcrumb.length - 1 
+                  ? 'text-blue-600 dark:text-blue-400' 
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              {item.name}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <!-- Article Header -->
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {currentPage.title}
+      </h1>
+      {currentPage.description && (
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+          {currentPage.description}
+        </p>
+      )}
+    </header>
+
+    <!-- Article Content -->
+    <article class="prose prose-lg dark:prose-invert max-w-none">
+      <currentFile.Content />
+    </article>
+
+    <!-- Navigation Footer -->
+    <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <!-- Previous/Next Navigation -->
+        <div class="flex-1">
+          {(() => {
+            const currentIndex = navigationItems.findIndex(item => item.slug === slug);
+            const previousItem = currentIndex > 0 ? navigationItems[currentIndex - 1] : null;
+            const nextItem = currentIndex < navigationItems.length - 1 ? navigationItems[currentIndex + 1] : null;
+            
+            return (
+              <div class="flex justify-between">
+                {previousItem ? (
+                  <a 
+                    href={`/${previousItem.slug}`} 
+                    class="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Anterior: {previousItem.title}
+                  </a>
+                ) : <div></div>}
+                
+                {nextItem && (
+                  <a 
+                    href={`/${nextItem.slug}`} 
+                    class="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Siguiente: {nextItem.title}
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+        
+        <!-- Back to Home -->
+        <a href="/" class="btn btn-secondary">
+          Volver al Inicio
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- API endpoint for navigation -->
+  <script type="application/json" id="navigation-data">
+    {JSON.stringify(navigationItems)}
+  </script>
+</Layout>
