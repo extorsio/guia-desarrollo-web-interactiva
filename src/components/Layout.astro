@@ -16,7 +16,7 @@ const {
 ---
 
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
@@ -175,12 +175,12 @@ const {
       const initTheme = () => {
         const html = document.documentElement;
         const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-          html.classList.add('dark');
-        } else {
+        // Por defecto modo oscuro
+        if (savedTheme === 'light') {
           html.classList.remove('dark');
+        } else {
+          html.classList.add('dark');
         }
       };
       
