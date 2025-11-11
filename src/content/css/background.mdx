@@ -1,0 +1,795 @@
+---
+title: "Background en CSS"
+slug: "background"
+description: "Entiende y domina todas las propiedades de background en CSS con analogías sencillas y ejemplos interactivos."
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# Background en CSS 🌌
+
+## 1. Analogía sencilla
+
+Imagina que un elemento HTML (como un `<div>`) es una pared.  
+
+El **background** es todo lo que decora esa pared:
+
+- El color 🎨
+- La imagen 🖼️
+- Si la imagen se repite o no 🔁
+- Dónde se coloca 📍
+- Si se mueve con el scroll o se queda fija 📌
+- Cómo se mezcla con otros fondos ✨
+
+CSS te da herramientas para controlar con detalle cómo se ve esa “pared de fondo”.
+
+---
+
+## 2. Propiedades principales del background 🧩
+
+Vamos una por una con ejemplos interactivos.
+
+### 🟦 background-color
+
+Define el color de fondo del elemento.
+
+```css
+div {
+  background-color: lightblue;
+}
+```
+
+Acepta valores como:
+- `red`
+- `#ff0000`
+- `rgb(255, 0, 0)`
+- `rgba(255, 0, 0, 0.5)`
+- `hsl(0, 100%, 50%)`
+
+<CodePlayground
+  title="background-color: pinta el fondo"
+  html={`<div class="card">
+  <h2>Fondo personalizable 🎨</h2>
+  <p>Cambia el background-color en el CSS y mira qué pasa.</p>
+</div>`}
+  css={`.card {
+  padding: 16px;
+  border-radius: 12px;
+  color: #111827;
+  font-family: system-ui, sans-serif;
+  background-color: lightblue; /* Prueba con pink, #111827, rgb(34,197,94), rgba(79,70,229,0.15) */
+  box-shadow: 0 6px 18px rgba(15,23,42,0.12);
+}
+`}
+  height="240px"
+/>
+
+Ideas:
+- Prueba `background-color: #111827;` y cambia el color del texto a blanco.
+- Usa `rgba()` para hacer fondos semitransparentes.
+
+---
+
+### 🖼️ background-image
+
+Define una imagen de fondo.
+
+```css
+div {
+  background-image: url('fondo.jpg');
+}
+```
+
+También puedes usar URLs completas o gradientes.
+
+<CodePlayground
+  title="background-image básico"
+  html={`<div class="bg-box">
+  <p>Este cuadro tiene una imagen de fondo 🌄</p>
+</div>`}
+  css={`.bg-box {
+  padding: 18px;
+  height: 160px;
+  border-radius: 12px;
+  color: white;
+  font-family: system-ui, sans-serif;
+  background-image: url('https://images.pexels.com/photos/1434608/pexels-photo-1434608.jpeg?auto=compress&w=800');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 10px 25px rgba(15,23,42,0.35);
+}
+
+/* Prueba cambiar la imagen por otra URL o usar un gradient:
+   background-image: linear-gradient(135deg, #6366f1, #22c55e); */
+`}
+  height="240px"
+/>
+
+Múltiples imágenes:
+
+```css
+div {
+  background-image: url('nubes.png'), url('cielo.png');
+}
+```
+
+---
+
+### 🔁 background-repeat
+
+Indica si la imagen se repite.
+
+Valores comunes:
+- `repeat` (por defecto)
+- `no-repeat`
+- `repeat-x`
+- `repeat-y`
+- `space`
+- `round`
+
+<CodePlayground
+  title="background-repeat en acción"
+  html={`<div class="tile repeat">repeat</div>
+<div class="tile no-repeat">no-repeat</div>
+<div class="tile repeat-x">repeat-x</div>
+<div class="tile repeat-y">repeat-y</div>`}
+  css={`.tile {
+  width: 160px;
+  height: 80px;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 6px;
+  padding: 4px;
+  font-size: 11px;
+  font-family: system-ui, sans-serif;
+  color: #111827;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+/* Usamos un patrón pequeño */
+.tile.repeat {
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+  background-repeat: repeat;
+}
+
+.tile.no-repeat {
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+  background-repeat: no-repeat;
+}
+
+.tile.repeat-x {
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+  background-repeat: repeat-x;
+}
+
+.tile.repeat-y {
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+  background-repeat: repeat-y;
+}
+
+/* Prueba otros valores: space, round */
+`}
+  height="260px"
+/>
+
+---
+
+### 📐 background-size
+
+Controla el tamaño de la imagen de fondo.
+
+Valores útiles:
+- `cover` → llena todo el contenedor, puede recortar
+- `contain` → muestra toda la imagen, puede dejar espacios
+- `auto` → tamaño original
+- `100px 50px` → ancho y alto específicos
+
+<CodePlayground
+  title="background-size: cover vs contain"
+  html={`<div class="box cover">cover</div>
+<div class="box contain">contain</div>
+<div class="box auto">auto</div>`}
+  css={`.box {
+  display: inline-flex;
+  width: 160px;
+  height: 100px;
+  margin: 6px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
+  color: #111827;
+  background-image: url('https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&w=600');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.cover {
+  background-size: cover;
+}
+
+.contain {
+  background-size: contain;
+  background-color: #e5e7eb;
+}
+
+.auto {
+  background-size: auto;
+  background-color: #e5e7eb;
+}
+
+/* Prueba: background-size: 60px 60px; en .auto */
+`}
+  height="260px"
+/>
+
+---
+
+### 📍 background-position
+
+Indica dónde se coloca la imagen:
+
+Ejemplos:
+- `center center`
+- `top left`
+- `right bottom`
+- `50% 20px`
+- valores en `px` o `%`
+
+<CodePlayground
+  title="background-position: mueve la imagen"
+  html={`<div class="pos-box top-left">top left</div>
+<div class="pos-box center">center</div>
+<div class="pos-box bottom-right">bottom right</div>`}
+  css={`.pos-box {
+  display: inline-flex;
+  width: 150px;
+  height: 90px;
+  margin: 6px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
+  color: white;
+  background-image: url('https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&w=600');
+  background-size: 120px 80px;
+  background-repeat: no-repeat;
+  background-color: #111827;
+}
+
+.top-left {
+  background-position: top left;
+}
+
+.center {
+  background-position: center center;
+}
+
+.bottom-right {
+  background-position: bottom right;
+}
+
+/* Prueba: usa valores como 20px 10px o 50% 100% */
+`}
+  height="240px"
+/>
+
+---
+
+### 📎 background-attachment
+
+Controla si el fondo se mueve con el scroll.
+
+- `scroll` (por defecto) → se mueve con el contenido
+- `fixed` → se queda fijo
+- `local` → relativo al área con scroll del elemento
+
+Nota: en móviles `fixed` puede tener bugs.
+
+<CodePlayground
+  title="background-attachment (simulación)"
+  html={`<div class="scroll-area">
+  <p>Haz scroll aquí 👇</p>
+  <p>Lorem ipsum dolor sit amet...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+  <p>Más texto...</p>
+</div>`}
+  css={`.scroll-area {
+  height: 160px;
+  overflow-y: scroll;
+  padding: 12px;
+  color: white;
+  font-family: system-ui, sans-serif;
+  border-radius: 12px;
+  border: 1px solid #111827;
+  background-image: url('https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg?auto=compress&w=800');
+  background-size: cover;
+  background-position: center;
+  background-attachment: local; /* Prueba: fixed | scroll */
+}
+
+/* Nota: En este entorno el comportamiento puede variar, 
+   pero la idea es: fixed se queda pegado al viewport. */
+`}
+  height="260px"
+/>
+
+---
+
+### 🧱 background-clip
+
+Define hasta dónde se pinta el fondo:
+
+- `border-box` (por defecto) → hasta el borde
+- `padding-box` → solo hasta el padding
+- `content-box` → solo detrás del contenido
+- `text` → usa el texto como máscara (requiere trucos)
+
+<CodePlayground
+  title="background-clip: comparando áreas"
+  html={`<div class="clip base border-box">border-box</div>
+<div class="clip base padding-box">padding-box</div>
+<div class="clip base content-box">content-box</div>`}
+  css={`.clip.base {
+  display: inline-block;
+  margin: 6px;
+  padding: 12px;
+  border: 4px solid #111827;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: #111827;
+  border-radius: 10px;
+  background-image: linear-gradient(135deg, #22c55e, #3b82f6);
+}
+
+.border-box {
+  background-clip: border-box;
+}
+
+.padding-box {
+  background-clip: padding-box;
+}
+
+.content-box {
+  background-clip: content-box;
+}
+
+/* Juega cambiando cada valor para ver la diferencia */
+`}
+  height="260px"
+/>
+
+Ejemplo llamativo con texto:
+
+<CodePlayground
+  title="background-clip: text (efecto avanzado)"
+  html={`<h1 class="clip-text">Texto con fondo 🌈</h1>`}
+  css={`.clip-text {
+  font-family: system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  text-align: center;
+  background-image: linear-gradient(90deg, #22c55e, #3b82f6, #a855f7, #ec4899);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shine 3s linear infinite;
+  margin: 0;
+}
+
+@keyframes shine {
+  to {
+    background-position: -200% center;
+  }
+}
+
+/* Este truco usa background-clip: text (+ prefix) para rellenar el texto */
+`}
+  height="220px"
+/>
+
+---
+
+### 🪄 background-origin
+
+Define desde dónde se calcula la posición del fondo:
+
+- `padding-box` (por defecto)
+- `border-box`
+- `content-box`
+
+<CodePlayground
+  title="background-origin: punto de referencia"
+  html={`<div class="origin-box origin-padding">padding-box</div>
+<div class="origin-box origin-border">border-box</div>
+<div class="origin-box origin-content">content-box</div>`}
+  css={`.origin-box {
+  display: inline-flex;
+  width: 150px;
+  height: 90px;
+  margin: 6px;
+  padding: 16px;
+  border: 6px solid #111827;
+  border-radius: 14px;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: system-ui, sans-serif;
+  font-size: 9px;
+  color: white;
+  background-image: url('https://images.pexels.com/photos/2691405/pexels-photo-2691405.jpeg?auto=compress&w=400');
+  background-size: 70px 70px;
+  background-repeat: no-repeat;
+  background-color: #111827;
+}
+
+.origin-padding {
+  background-origin: padding-box;
+  background-position: top left;
+}
+
+.origin-border {
+  background-origin: border-box;
+  background-position: top left;
+}
+
+.origin-content {
+  background-origin: content-box;
+  background-position: top left;
+}
+
+/* Cambia background-origin y background-position para ver cómo se mueve el icono */
+`}
+  height="260px"
+/>
+
+---
+
+### 🌈 background-blend-mode
+
+Mezcla colores y fondos como en herramientas de diseño.
+
+Ejemplos:
+- `multiply`
+- `screen`
+- `overlay`
+- `darken`
+- `lighten`
+
+<CodePlayground
+  title="background-blend-mode: mezclando fondos"
+  html={`<div class="blend-card multiply">multiply</div>
+<div class="blend-card screen">screen</div>
+<div class="blend-card overlay">overlay</div>`}
+  css={`.blend-card {
+  display: inline-flex;
+  width: 150px;
+  height: 90px;
+  margin: 6px;
+  border-radius: 14px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 6px;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  color: white;
+  background-image:
+    linear-gradient(135deg, rgba(56,189,248,0.9), rgba(79,70,229,0.9)),
+    url('https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&w=600');
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 8px 18px rgba(15,23,42,0.35);
+}
+
+.multiply {
+  background-blend-mode: multiply;
+}
+
+.screen {
+  background-blend-mode: screen;
+}
+
+.overlay {
+  background-blend-mode: overlay;
+}
+
+/* Prueba otros valores: darken, lighten, color-burn, soft-light */
+`}
+  height="260px"
+/>
+
+---
+
+## 3. Forma corta: background (shorthand) 🧾
+
+Puedes combinar varias propiedades en una sola línea:
+
+```css
+div {
+  background: color image repeat position / size attachment origin clip;
+}
+```
+
+El orden es flexible, pero debe tener sentido.  
+Ejemplo:
+
+```css
+div {
+  background: lightblue url('fondo.jpg') no-repeat center/cover fixed;
+}
+```
+
+Qué pasa aquí:
+- `lightblue` → color de fondo
+- `url('fondo.jpg')` → imagen
+- `no-repeat` → no se repite
+- `center/cover` → centrada y cubre todo
+- `fixed` → fondo fijo al hacer scroll
+
+Ejemplo visual:
+
+<CodePlayground
+  title="background shorthand vs propiedades separadas"
+  html={`<section class="hero hero-larga">
+  <h2>Versión larga</h2>
+</section>
+<section class="hero hero-corta">
+  <h2>Versión shorthand</h2>
+</section>`}
+  css={`.hero {
+  height: 140px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 14px;
+  font-family: system-ui, sans-serif;
+  color: white;
+  box-shadow: 0 10px 25px rgba(15,23,42,0.35);
+}
+
+/* Versión larga */
+.hero-larga {
+  background-color: #1f2937;
+  background-image: url('https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg?auto=compress&w=900');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: scroll;
+}
+
+/* Versión shorthand (equivalente) */
+.hero-corta {
+  background: #1f2937
+    url('https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg?auto=compress&w=900')
+    no-repeat center / cover scroll;
+}
+
+/* Juega cambiando valores en hero-corta y nota que pisa todas las propiedades de fondo */
+`}
+  height="320px"
+/>
+
+⚠️ Importante:
+- Cada vez que usas `background:` sobrescribes todas las propiedades de fondo previas del elemento.
+
+---
+
+## 4. Ejemplo completo 🌠
+
+Ejemplo estilo “fondo espacial”:
+
+```css
+body {
+  background-color: #111827;
+  background-image: url('stars.png');
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-position: center top;
+  background-size: cover;
+}
+```
+
+Versión shorthand:
+
+```css
+body {
+  background: #111827 url('stars.png') repeat fixed center top / cover;
+}
+```
+
+<CodePlayground
+  title="Ejemplo completo de fondo"
+  html={`<div class="space">
+  <h2>Explora el espacio ✨</h2>
+  <p>Fondo con color, imagen, repeat y tamaño.</p>
+</div>`}
+  css={`.space {
+  height: 180px;
+  border-radius: 16px;
+  padding: 16px;
+  color: #e5e7eb;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  background-color: #020817;
+  background-image:
+    url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: center top;
+}
+
+/* Prueba con shorthand:
+.space {
+  background: #020817
+    url('https://www.transparenttextures.com/patterns/stardust.png')
+    repeat center top / auto;
+}
+`}
+  height="260px"
+/>
+
+---
+
+## 5. Cosas “bajo el capó” ⚙️
+
+- El fondo se pinta detrás del contenido, el padding y el borde.
+- Si un elemento es transparente, se verá el fondo de su padre.
+- Puedes tener múltiples fondos: el primero se dibuja encima.
+
+Ejemplo con múltiples fondos:
+
+<CodePlayground
+  title="Múltiples fondos en capas"
+  html={`<div class="multi-bg">
+  <p>Capas de cielo 🌅 + patrón ✨</p>
+</div>`}
+  css={`.multi-bg {
+  height: 150px;
+  border-radius: 16px;
+  padding: 12px;
+  font-family: system-ui, sans-serif;
+  color: #f9fafb;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 8px 20px rgba(15,23,42,0.35);
+  background-image:
+    url('https://www.transparenttextures.com/patterns/stardust.png'),
+    linear-gradient(135deg, #0f172a, #60a5fa);
+  background-repeat: repeat, no-repeat;
+  background-size: auto, cover;
+  background-position: center, center;
+}
+
+/* La primera imagen (stardust) está ENCIMA del gradient.
+   El orden importa: primera = capa superior. */
+`}
+  height="240px"
+/>
+
+---
+
+## 6. Errores comunes ⚠️
+
+Algunos tropiezos típicos y cómo verlos en acción.
+
+### 6.1 No usar background-size con imágenes grandes
+
+Sin `background-size`, la imagen puede verse cortada o repetida de forma rara.
+
+<CodePlayground
+  title="Error: sin background-size vs solución"
+  html={`<div class="bad">
+  Sin background-size ❌
+</div>
+<div class="good">
+  Con background-size: cover ✅
+</div>`}
+  css={`.bad, .good {
+  display: inline-flex;
+  width: 170px;
+  height: 90px;
+  margin: 6px;
+  border-radius: 10px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  color: white;
+  background-image: url('https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&w=1200');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.bad {
+  /* Sin background-size: la imagen puede quedar mal escalada o cortada */
+}
+
+.good {
+  background-size: cover;
+}
+
+/* Prueba agregar contain, o cambiar repeat para ver el efecto */
+`}
+  height="240px"
+/>
+
+### 6.2 Olvidar que shorthand pisa todo
+
+<CodePlayground
+  title="Error: background shorthand sobrescribe propiedades"
+  html={`<div class="box1">Caja 1</div>
+<div class="box2">Caja 2</div>`}
+  css={`.box1, .box2 {
+  display: inline-flex;
+  width: 150px;
+  height: 80px;
+  margin: 6px;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  color: white;
+  background-color: #111827;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-repeat: repeat;
+}
+
+/* Aquí se pisa todo con shorthand */
+.box2 {
+  background: #22c55e; /* Sobrescribe image, repeat, etc. */
+}
+
+/* Comentario:
+   Al usar background: defines un nuevo set completo de propiedades de fondo. */
+`}
+  height="220px"
+/>
+
+---
+
+## 7. Buenas prácticas 💡
+
+- Usa `background-size: cover` o `contain` con imágenes grandes.
+- Asegura buen contraste entre texto y fondo (accesibilidad).
+- Usa formatos ligeros (WebP, AVIF) para mejorar rendimiento.
+- Evita `background-attachment: fixed` en móviles (puede causar bugs).
+- Usa `background` shorthand solo cuando realmente configures varias propiedades juntas.
+- Ordena las capas de múltiples fondos pensando qué debe estar arriba.
+
+---
+
+## 8. Mini retos interactivos 🧩
+
+Prueba directamente en los playgrounds (o crea uno nuevo):
+
+1. Crea una sección tipo “hero” con:
+   - Imagen de fondo,
+   - `background-size: cover`,
+   - Un overlay oscuro con `background-blend-mode`.
+2. Haz un texto con `background-clip: text` y un gradiente animado.
+3. Crea una tarjeta con dos fondos:
+   - Un patrón sutil arriba,
+   - Un degradado debajo.
+4. Corrige una caja con imagen estirada usando `background-size`.
+5. Usa shorthand para reescribir varias reglas largas de background sin romper estilos.
+
+Si dominas estas propiedades de background, puedes crear interfaces modernas, limpias y profesionales controlando completamente cómo se ven tus “paredes” en la web.
