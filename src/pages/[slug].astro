@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
+import { buildNavigation } from '../utils/navigation';
 
 // Get all possible slugs for getStaticPaths
 export async function getStaticPaths() {
@@ -28,22 +29,9 @@ if (!currentFile) {
   return Astro.redirect('/404');
 }
 
-// Get all navigation items - reload for component
-const cssFiles = await Astro.glob('../content/css/*.mdx');
-const jsFiles = await Astro.glob('../content/javascript/*.mdx');
-
-const createNavItems = (files: any[]) => {
-  return files.map(file => ({
-    title: file.frontmatter?.title || file.url.split('/').pop()?.replace('.mdx', '') || 'Untitled',
-    slug: file.frontmatter?.slug || file.url.split('/').pop()?.replace('.mdx', '') || 'untitled',
-    description: file.frontmatter?.description || ''
-  }));
-};
-
-const navigationItems = [
-  ...createNavItems(cssFiles),
-  ...createNavItems(jsFiles)
-].sort((a, b) => a.title.localeCompare(b.title));
+// Build navigation at build-time
+const navigationSections = await buildNavigation();
+const navigationItems = navigationSections.flatMap(section => section.items);
 
 // Get current page info
 const currentPage = {
@@ -59,7 +47,7 @@ const breadcrumb = [
 ];
 ---
 
-<Layout title={currentPage.title} description={currentPage.description}>
+<Layout title={currentPage.title} description={currentPage.description} navigationSections={navigationSections}>
   <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb -->
     <nav class="flex mb-8" aria-label="Breadcrumb">

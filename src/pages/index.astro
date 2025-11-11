@@ -1,34 +1,17 @@
 ---
 import Layout from '../components/Layout.astro';
+import { buildNavigation, flattenNavigation } from '../utils/navigation';
 
-// Get all markdown files from content directory
-const cssFiles = await Astro.glob('../content/css/*.mdx');
-const jsFiles = await Astro.glob('../content/javascript/*.mdx');
-
-const createNavItems = (files: any[], section: string, sectionIcon: string) => {
-  return files
-    .filter((file: any) => !file.url?.includes('index'))
-    .map((file: any) => ({
-      title: file.frontmatter?.title || file.url?.split('/').pop()?.replace('.mdx', '') || 'Untitled',
-      slug: file.frontmatter?.slug || file.url?.split('/').pop()?.replace('.mdx', '') || 'untitled',
-      description: file.frontmatter?.description || '',
-      section: section,
-      sectionIcon: sectionIcon
-    }))
-    .sort((a: any, b: any) => a.title.localeCompare(b.title));
-};
-
-const cssItems = createNavItems(cssFiles, 'CSS', '🎨');
-const jsItems = createNavItems(jsFiles, 'JavaScript', '⚡');
-const navigationItems = [...cssItems, ...jsItems];
-
-const sections = [
-  { name: 'CSS', icon: '🎨', items: cssItems },
-  { name: 'JavaScript', icon: '⚡', items: jsItems }
-];
+// Build navigation at build-time using getCollection
+const sections = await buildNavigation();
+const navigationItems = await flattenNavigation(sections);
 ---
 
-<Layout title="Guía CSS Interactiva" description="Aprende CSS con ejemplos interactivos y guías paso a paso">
+<Layout 
+  title="Guía CSS Interactiva" 
+  description="Aprende CSS con ejemplos interactivos y guías paso a paso"
+  navigationSections={sections}
+>
   <div class="max-w-4xl mx-auto">
     <!-- Hero Section -->
     <div class="text-center mb-12">
@@ -138,6 +121,6 @@ const sections = [
 
   <!-- API endpoint for navigation -->
   <script type="application/json" id="navigation-data">
-    {JSON.stringify(navigationItems)}
+    {JSON.stringify(sections)}
   </script>
 </Layout>
